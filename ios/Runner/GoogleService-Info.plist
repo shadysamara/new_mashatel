@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1067445087940-k2t6ljam9ccpmctabdgk96ofq4fnjned.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1067445087940-k2t6ljam9ccpmctabdgk96ofq4fnjned</string>
+	<key>API_KEY</key>
+	<string>AIzaSyB5lGO99P_sU2qK9SwD2PFW-px5u87jwlg</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1067445087940</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.mashatel</string>
+	<key>PROJECT_ID</key>
+	<string>mashatel2020</string>
+	<key>STORAGE_BUCKET</key>
+	<string>mashatel2020.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1067445087940:ios:93b30713835e93ae55e391</string>
+	<key>DATABASE_URL</key>
+	<string>https://mashatel2020.firebaseio.com</string>
+</dict>
+</plist>

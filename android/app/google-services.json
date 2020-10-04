@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1067445087940",
+    "firebase_url": "https://mashatel2020.firebaseio.com",
+    "project_id": "mashatel2020",
+    "storage_bucket": "mashatel2020.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1067445087940:android:510164b9f09783d355e391",
+        "android_client_info": {
+          "package_name": "com.example.mashatel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1067445087940-nb68vnu98335p11qft55j7k8el2vu85n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJhyR60Gr5jE-oF2BqJ2Yz2KLN261Q5Zg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1067445087940-nb68vnu98335p11qft55j7k8el2vu85n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
