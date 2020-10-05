@@ -58,10 +58,12 @@ class _NewCategoryState extends State<NewTerms> {
           appGet.setTermsModel(termsModel);
           CustomDialougs.utils
               .showSackbar(messageKey: 'success_terms', titleKey: 'success');
+          Future.delayed(Duration(seconds: 3)).then((value) => Get.back());
         } else {
           signInGetx.pr.hide();
           CustomDialougs.utils
               .showSackbar(messageKey: 'failed_terms', titleKey: 'faild');
+          Future.delayed(Duration(seconds: 3)).then((value) => Get.back());
         }
       } else {
         CustomDialougs.utils
@@ -75,7 +77,7 @@ class _NewCategoryState extends State<NewTerms> {
     // TODO: implement build
     return Scaffold(
       drawer: AppSettings(appGet.appUser.value),
-      appBar: BaseAppbar('new_category'),
+      appBar: BaseAppbar('conditions'),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 30.h),
         child: SingleChildScrollView(
@@ -86,13 +88,13 @@ class _NewCategoryState extends State<NewTerms> {
                   child: Column(
                     children: [
                       MyTextField(
-                        hintTextKey: 'nameAr',
+                        hintTextKey: 'contentAr',
                         nofLines: 1,
                         saveFunction: setCatNameAr,
                         validateFunction: nullValidation,
                       ),
                       MyTextField(
-                        hintTextKey: 'nameEn',
+                        hintTextKey: 'contentEn',
                         nofLines: 1,
                         saveFunction: setCatNameEn,
                         validateFunction: nullValidation,

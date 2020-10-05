@@ -19,6 +19,8 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mashatel/services/shared_prefrences_helper.dart';
 import 'package:overlay_support/overlay_support.dart';
 
+import 'features/customers/ui/pages/add_advertisment.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await translator.init(
@@ -86,18 +88,16 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return OverlaySupport(
-      child: GetMaterialApp(
+    return GetMaterialApp(
+      theme: _myTheme,
+      localizationsDelegates: translator.delegates,
+      locale: translator.locale,
+      supportedLocales: translator.locals(),
+      home: MaterialApp(
         theme: _myTheme,
-        home: MaterialApp(
-          theme: _myTheme,
-          title: 'Ecards',
-          home: BrokerPage(),
-          debugShowCheckedModeBanner: false,
-          localizationsDelegates: translator.delegates,
-          locale: translator.locale,
-          supportedLocales: translator.locals(),
-        ),
+        title: 'Ecards',
+        home: BrokerPage(),
+        debugShowCheckedModeBanner: false,
       ),
     );
   }
@@ -122,12 +122,12 @@ class _BrokerPageState extends State<BrokerPage> {
       builder: (context, snapshot) {
         // Check for errors
         if (snapshot.hasError) {
-          return ErrorScreen();
+          return SplashScreen();
         }
 
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
-          return ContactUsPage();
+          return SplashScreen();
         }
 
         // Otherwise, show something whilst waiting for initialization to complete

@@ -49,9 +49,14 @@ class _SplashScreenState extends State<SplashScreen>
     appGet.setAboutModel(aboutApp);
   }
 
+  getAds() async {}
+
   getAllVariables() async {
     spUser = await SPHelper.spHelper.getUserCredintial();
-    getAppUser();
+    if (spUser != null) {
+      getAppUser();
+    }
+    getAds();
     getTerms();
     getAboutApp();
   }
@@ -65,11 +70,13 @@ class _SplashScreenState extends State<SplashScreen>
       if (spUser != null) {
         if (spUser.isCustomer) {
           signInGetx.usertype.value = userType.customer;
+          print(appGet.appUser.value.imagePath);
           Get.off(MainPage());
         }
         if (spUser.isMarket) {
           signInGetx.usertype.value = userType.market;
           appGet.marketId.value = spUser.userId;
+
           Get.off(MarketPage(appUser));
         }
         if (spUser.isAdmin) {

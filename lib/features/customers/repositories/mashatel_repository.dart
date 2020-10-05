@@ -66,6 +66,7 @@ class MashatelRepository {
     }
   }
 
+  ///  ///////////////////////////////////////////////////////////
   Future<List<String>> getAllMiniAds() async {
     List<QueryDocumentSnapshot> snapshots =
         await MashatelClient.mashatelClient.getAllMiniAds();
@@ -73,4 +74,6 @@ class MashatelRepository {
         snapshots.map((e) => e.data()['adContent'].toString()).toList();
     return ads;
   }
+
+  ///  ///////////////////////////////////////////////////////////
 }

@@ -11,6 +11,7 @@ import 'package:mashatel/features/customers/modles/terms.dart';
 import 'package:mashatel/features/customers/repositories/mashatel_client.dart';
 import 'package:mashatel/features/customers/repositories/mashatel_repository.dart';
 import 'package:mashatel/features/sign_in/models/userApp.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 
 class AppGet {
   var allCategories = <Category>[].obs;
@@ -26,9 +27,18 @@ class AppGet {
   var appUser = AppUser().obs;
   var localImageFilePath = ''.obs;
   var marketId = ''.obs;
-
+  var images = <Asset>[].obs;
   AboutAppModel aboutAppModel;
   TermsModel termsModel;
+  setImagesAssets(List<Asset> images) {
+    this.images.value = images;
+  }
+
+  deleteAssetImage(Asset asset) {
+    int index = this.images.indexOf(asset);
+
+    this.images.removeAt(index);
+  }
 
   setAppUser(AppUser appUser) {
     this.appUser.value = appUser;

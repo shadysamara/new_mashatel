@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:mashatel/app_settings.dart';
 import 'package:mashatel/features/customers/ui/pages/contact_us_page.dart';
 import 'package:mashatel/features/customers/ui/pages/control_panel/about_app/about_app.dart';
 import 'package:mashatel/features/customers/ui/pages/control_panel/main_control_page.dart';
@@ -74,12 +75,16 @@ class _AppSettingsState extends State<AppSettings> {
           child: Column(
             children: [
               UserAccountsDrawerHeader(
-                  currentAccountPicture: CircleAvatar(
-                    backgroundImage: CachedNetworkImageProvider(
-                      widget.appUser.imagePath,
-                    ),
-                    child: Container(),
-                  ),
+                  currentAccountPicture: widget.appUser.imagePath != null
+                      ? CircleAvatar(
+                          backgroundImage: CachedNetworkImageProvider(
+                            widget.appUser.imagePath,
+                          ),
+                          child: Container(),
+                        )
+                      : CircleAvatar(
+                          child: Text(widget.appUser.userName[0].toUpperCase()),
+                        ),
                   accountName: Text(widget.appUser.userName),
                   accountEmail: Text(widget.appUser.email)),
               SettingsList(
@@ -125,6 +130,7 @@ class _AppSettingsState extends State<AppSettings> {
                                 print(index);
                                 if (index == 0) {
                                   SPHelper.spHelper.setLanguage('ar');
+
                                   setState(() {
                                     isSelected[0] = true;
                                     isSelected[1] = false;
@@ -164,10 +170,7 @@ class _AppSettingsState extends State<AppSettings> {
                               trailing: Icon(Icons.arrow_right,
                                   color: AppColors.primaryColor),
                             )
-                          : Container(),
-                      //////////////////////////////////////////////////
-                      widget.appUser.isAdmin == true
-                          ? SettingsTile(
+                          : SettingsTile(
                               onTap: () {
                                 Get.to(ControlPanelPage());
                               },
@@ -178,10 +181,10 @@ class _AppSettingsState extends State<AppSettings> {
                               ),
                               trailing: Icon(Icons.arrow_right,
                                   color: AppColors.primaryColor),
-                            )
-                          : Container(),
+                            ),
+
                       //////////////////////////////////////////////////
-                      widget.appUser.isMarket == false
+                      widget.appUser.isMarket == true
                           ? SettingsTile(
                               onTap: () {
                                 Get.to(MarketPage(widget.appUser));
@@ -194,10 +197,7 @@ class _AppSettingsState extends State<AppSettings> {
                               trailing: Icon(Icons.arrow_right,
                                   color: AppColors.primaryColor),
                             )
-                          : Container(),
-                      /////////////////////////////////////////////////
-                      widget.appUser.isCustomer
-                          ? SettingsTile(
+                          : SettingsTile(
                               onTap: () {
                                 Get.to(ContactUsPage());
                               },
@@ -208,8 +208,8 @@ class _AppSettingsState extends State<AppSettings> {
                               ),
                               trailing: Icon(Icons.arrow_right,
                                   color: AppColors.primaryColor),
-                            )
-                          : Container(),
+                            ),
+                      /////////////////////////////////////////////////
                     ],
                   ),
                   //////////////////////////////////////////////////////////////

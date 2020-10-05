@@ -174,14 +174,17 @@ class _LoginScreenState extends State<LoginScreen> {
           if (user.isMarket) {
             signInGetx.setUserType(userType.market);
             appGet.setMarketId(user.userId);
+            appGet.setAppUser(user);
             Get.off(MarketPage(user));
 
             Get.off(MarketPage(user));
           } else if (user.isCustomer) {
             signInGetx.setUserType(userType.customer);
+            appGet.setAppUser(user);
             Get.off(MainPage());
           } else {
             signInGetx.setUserType(userType.admin);
+            appGet.setAppUser(user);
             Get.off(MainPage());
           }
         }

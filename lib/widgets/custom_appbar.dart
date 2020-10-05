@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mashatel/features/customers/blocs/app_get.dart';
+import 'package:mashatel/features/customers/ui/pages/add_advertisment.dart';
 import 'package:mashatel/features/customers/ui/pages/new_product.dart';
 import 'package:mashatel/features/sign_in/providers/signInGetx.dart';
 import 'package:mashatel/values/colors.dart';
@@ -31,7 +32,7 @@ class BaseAppbar extends StatelessWidget implements PreferredSizeWidget {
                   color: Colors.white,
                 ),
                 onPressed: () {
-                  Get.to(NewProduct(appGet.marketId.value));
+                  Get.to(AddNewProduct());
                 }),
         IconButton(
             icon: Icon(

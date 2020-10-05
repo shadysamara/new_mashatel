@@ -1,18 +1,22 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
+import 'package:mashatel/features/customers/modles/product_model.dart';
 import 'package:mashatel/features/customers/modles/bigAds.dart';
 import 'package:mashatel/features/customers/modles/category.dart';
 import 'package:mashatel/features/customers/modles/complaint_model.dart';
 import 'package:mashatel/features/customers/modles/product.dart';
 import 'package:mashatel/features/customers/modles/subCategory.dart';
 import 'package:mashatel/features/customers/modles/terms.dart';
+import 'package:mashatel/features/sign_in/models/userApp.dart';
 
 import 'package:mashatel/features/sign_in/providers/signInGetx.dart';
 import 'package:mashatel/utils/custom_dialoug.dart';
 import 'package:mashatel/features/customers/modles/about.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 
 class MashatelClient {
   MashatelClient._();
@@ -144,6 +148,7 @@ class MashatelClient {
     }
   }
 
+  ///  ///////////////////////////////////////////////////////////
   Future<String> addNewAdvertisment(String contentAr, String contentEn) async {
     try {
       signInGetx.pr.show();
@@ -160,6 +165,7 @@ class MashatelClient {
     }
   }
 
+  ///  ///////////////////////////////////////////////////////////
   Future<List<QueryDocumentSnapshot>> getAllMiniAds() async {
     try {
       QuerySnapshot documentReference =
@@ -174,6 +180,7 @@ class MashatelClient {
     }
   }
 
+  ///  ///////////////////////////////////////////////////////////
   Future<String> addBigAds(BigAds bigAds) async {
     try {
       signInGetx.pr.show();
@@ -189,6 +196,7 @@ class MashatelClient {
     }
   }
 
+  ///  ///////////////////////////////////////////////////////////
   Future<List<QueryDocumentSnapshot>> getAllBigAds() async {
     try {
       QuerySnapshot documentReference =
@@ -223,9 +231,13 @@ class MashatelClient {
     try {
       DocumentSnapshot documentReference =
           await firestore.collection('terms').doc('terms').get();
-      TermsModel terms = TermsModel.fromMap(documentReference.data());
-      signInGetx.pr.hide();
-      return terms;
+      if (documentReference.data() != null) {
+        TermsModel terms = TermsModel.fromMap(documentReference.data());
+        signInGetx.pr.hide();
+        return terms;
+      } else {
+        return null;
+      }
     } on Exception catch (e) {
       signInGetx.pr.hide();
       CustomDialougs.utils
@@ -256,9 +268,14 @@ class MashatelClient {
     try {
       DocumentSnapshot documentReference =
           await firestore.collection('aboutApp').doc('aboutApp').get();
-      AboutAppModel aboutApp = AboutAppModel.fromMap(documentReference.data());
-      signInGetx.pr.hide();
-      return aboutApp;
+      if (documentReference.data() != null) {
+        AboutAppModel aboutApp =
+            AboutAppModel.fromMap(documentReference.data());
+        signInGetx.pr.hide();
+        return aboutApp;
+      } else {
+        return null;
+      }
     } on Exception catch (e) {
       signInGetx.pr.hide();
       CustomDialougs.utils
@@ -277,6 +294,79 @@ class MashatelClient {
       return documentReference.id;
     } on Exception catch (e) {
       signInGetx.pr.hide();
+      CustomDialougs.utils
+          .showDialoug(messageKey: e.toString(), titleKey: 'alert');
+      return null;
+    }
+  }
+
+///////////////////////////////////////////////////////////////////////
+  Future<List<ProductModel>> getAllAddvertisments() async {
+    try {
+      QuerySnapshot documentReference =
+          await firestore.collection('advertisments').get();
+      List<ProductModel> ads = documentReference.docs
+          .map((e) => ProductModel.fromMap(e.data()))
+          .toList();
+      signInGetx.pr.hide();
+      return ads;
+    } on Exception catch (e) {
+      signInGetx.pr.hide();
+      CustomDialougs.utils
+          .showDialoug(messageKey: e.toString(), titleKey: 'alert');
+      return null;
+    }
+  }
+
+  ///////////////////////////////////////////////////////////////////
+  Future<String> saveAssetImage(Asset asset, String marketId) async {
+    try {
+      DateTime dateTime = DateTime.now();
+
+      ByteData byteData =
+          await asset.getByteData(); // requestOriginal is being deprecated
+      List<int> imageData = byteData.buffer.asUint8List();
+      StorageTaskSnapshot snapshot = await firebaseStorage
+          .ref()
+          .child('products/$marketId/$dateTime.png')
+          .putData(imageData)
+          .onComplete;
+      String imageUrl = await snapshot.ref.getDownloadURL();
+
+      return imageUrl;
+    } on Exception catch (e) {
+      CustomDialougs.utils
+          .showDialoug(messageKey: e.toString(), titleKey: 'alert');
+      return null;
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////
+  Future<List<String>> uploadAllImages(
+      List<Asset> assets, String marketName) async {
+    List<String> urls = [];
+    for (int i = 0; i < assets.length; i++) {
+      String url = await saveAssetImage(assets[i], marketName);
+      urls.add(url);
+    }
+    return urls;
+  }
+
+  ///   ///////////////////////////////////////////////////////////
+  Future<String> addNewProductWithManyImages(
+      ProductModel productModel, AppUser appUser) async {
+    try {
+      List<Asset> assetImages = productModel.assetImages;
+      List<String> urls = await uploadAllImages(assetImages, appUser.userName);
+
+      productModel.imagesUrls = urls;
+
+      print(productModel.toJson());
+      DocumentReference documentReference =
+          await firestore.collection('products').add(productModel.toJson());
+
+      return 'documentReference.id';
+    } on Exception catch (e) {
       CustomDialougs.utils
           .showDialoug(messageKey: e.toString(), titleKey: 'alert');
       return null;

@@ -75,9 +75,11 @@ class _ContactUsPageState extends State<ContactUsPage> {
         if (complaintId != null) {
           CustomDialougs.utils
               .showSackbar(messageKey: 'message_sent', titleKey: 'success');
+          Future.delayed(Duration(seconds: 3)).then((value) => Get.back());
         } else {
           CustomDialougs.utils
               .showSackbar(messageKey: 'failed_message', titleKey: 'faild');
+          Future.delayed(Duration(seconds: 3)).then((value) => Get.back());
         }
       } else {
         CustomDialougs.utils

@@ -44,7 +44,7 @@ class MyTextField extends StatelessWidget {
           return validateFunction(value);
         },
         onSaved: (newValue) => saveFunction(newValue),
-        onChanged: (value) => saveFunction(value),
+        onChanged: (value) => validateFunction(value),
         style: TextStyle(
           fontWeight: FontWeight.w500,
           fontSize: ScreenUtil().setSp(18, allowFontScalingSelf: true),
