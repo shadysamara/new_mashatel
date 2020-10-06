@@ -1,14 +1,7 @@
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
-import 'package:mashatel/error_screen.dart';
-import 'package:mashatel/features/customers/ui/pages/contact_us_page.dart';
-import 'package:mashatel/features/customers/ui/pages/control_panel/add_banner_ad.dart';
-import 'package:mashatel/features/customers/ui/pages/control_panel/add_main_ad.dart';
-import 'package:mashatel/features/customers/ui/pages/control_panel/main_control_page.dart';
-import 'package:mashatel/features/sign_in/ui/pages/regestration_options.dart';
 import 'package:mashatel/loading_screen.dart';
-
 import 'package:mashatel/services/connectvity_service.dart';
 import 'package:mashatel/splach.dart';
 import 'package:mashatel/values/colors.dart';
@@ -17,9 +10,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/screenutil.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mashatel/services/shared_prefrences_helper.dart';
-import 'package:overlay_support/overlay_support.dart';
-
-import 'features/customers/ui/pages/add_advertisment.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

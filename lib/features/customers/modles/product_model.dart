@@ -12,6 +12,8 @@ class ProductModel {
   List<String> imagesUrls;
   bool isInnerMessages;
   bool isWithoutPhoneNumber;
+  String productId;
+  String marketId;
   ProductModel(
       {this.descAr,
       this.descEn,
@@ -21,16 +23,20 @@ class ProductModel {
       this.isWithoutPhoneNumber,
       this.nameAr,
       this.nameEn,
-      this.price});
+      this.price,
+      this.productId,
+      this.marketId});
   ProductModel.fromMap(Map map) {
     this.nameAr = map['nameAr'];
     this.nameEn = map['nameEn'];
     this.descAr = map['descAr'];
     this.descEn = map['descEn'];
-    this.imagesUrls = map['imagesUrls'];
+    this.imagesUrls = map['imagesUrls'].cast<String>();
     this.price = map['price'];
     this.isInnerMessages = map['isInnerMessages'];
     this.isWithoutPhoneNumber = map['isWithoutPhoneNumber'];
+    this.productId = map['productId'];
+    this.marketId = map['marketId'];
   }
   toJson() {
     return {
@@ -42,6 +48,7 @@ class ProductModel {
       'isInnerMessages': this.isInnerMessages,
       'isWithoutPhoneNumber': this.isWithoutPhoneNumber,
       'price': this.price,
+      'marketId': this.marketId
     };
   }
 }

@@ -119,7 +119,11 @@
     "descAr":"Description Name In Arabic",
     "ad_settings":"Product Settings",
     "isWithoutPhoneNumber":"Publish withput Phone number",
-    "isInnerMessages":"Allow Inner messages"
+    "isInnerMessages":"Allow Inner messages",
+    "noMessage":"Market has blocked messages for this product",
+    "noCall":"Market has blocked Calls for this product",
+    "url":"Advertisment Url",
+    "invalid_url":"Invalid Url"
     
    
 

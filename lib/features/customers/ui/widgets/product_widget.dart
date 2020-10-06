@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mashatel/features/customers/modles/product.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:mashatel/features/customers/modles/product_model.dart';
 import 'package:mashatel/values/radii.dart';
 
 class ProductWidget extends StatelessWidget {
-  Product product;
+  ProductModel product;
   ProductWidget(this.product);
   @override
   Widget build(BuildContext context) {
@@ -38,7 +39,7 @@ class ProductWidget extends StatelessWidget {
                 child: CachedNetworkImage(
                   fit: BoxFit.cover,
                   width: size.width,
-                  imageUrl: product.imageUrl,
+                  imageUrl: product.imagesUrls.first,
                   placeholder: (context, url) {
                     return FlareActor(
                       "assets/animations/loading.flr",

@@ -106,7 +106,8 @@ class _MarketRegistrationPageState extends State<AddNewProduct> {
             isWithoutPhoneNumber: this.isWithoutPhoneNumber,
             nameAr: this.nameAr,
             nameEn: this.nameEn,
-            price: this.price);
+            price: this.price,
+            marketId: appGet.appUser.value.userId);
 
         if (ConnectivityService.connectivityStatus !=
             ConnectivityStatus.Offline) {
@@ -164,7 +165,7 @@ class _MarketRegistrationPageState extends State<AddNewProduct> {
                     hintTextKey: 'product_en',
                     nofLines: 1,
                     validateFunction: nullValidation,
-                    saveFunction: setNameAr,
+                    saveFunction: setNameEn,
                   ),
                   MyTextField(
                     hintTextKey: 'descAr',

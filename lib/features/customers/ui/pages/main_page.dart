@@ -11,6 +11,7 @@ import 'package:mashatel/features/sign_in/providers/signInGetx.dart';
 import 'package:mashatel/features/sign_in/repositories/registration_client.dart';
 import 'package:mashatel/widgets/custom_appbar.dart';
 import 'package:mashatel/widgets/custom_drawer.dart';
+import 'package:mashatel/widgets/slider.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -23,6 +24,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     // TODO: implement build
     return Scaffold(
       appBar: BaseAppbar('categories'),
@@ -31,9 +33,10 @@ class _MainPageState extends State<MainPage> {
         child: Column(
           children: [
             Container(
-              height: 225.h,
-              child: Image.asset('assets/images/logo.png'),
-            ),
+                child: CarouselWithIndicatorDemo(
+              isAds: true,
+              ads: appGet.advertisments,
+            )),
             Expanded(
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.w),

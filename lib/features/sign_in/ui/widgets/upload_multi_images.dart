@@ -23,7 +23,6 @@ class _uploadFileState extends State<uploadMultibleFile> {
   File marketLogo;
   AppGet appGet = Get.put(AppGet());
   List<Asset> images = List<Asset>();
-  String _error = 'No Error Dectected';
 
 //////////////////////////////////////////////////////////////////////////////////////////
   Future<void> loadAssets() async {
@@ -53,7 +52,6 @@ class _uploadFileState extends State<uploadMultibleFile> {
 
     setState(() {
       images = resultList;
-      _error = error;
     });
   }
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -68,7 +66,7 @@ class _uploadFileState extends State<uploadMultibleFile> {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.all(new Radius.circular(50.0.h)),
             border: Border.all(color: AppColors.primaryColor)),
-        padding: EdgeInsets.only(right: 5.w),
+        padding: EdgeInsets.only(right: 0.w),
         margin: EdgeInsets.only(bottom: 10.w),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

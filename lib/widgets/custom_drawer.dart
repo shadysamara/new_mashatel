@@ -1,13 +1,11 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:mashatel/app_settings.dart';
 import 'package:mashatel/features/customers/ui/pages/contact_us_page.dart';
 import 'package:mashatel/features/customers/ui/pages/control_panel/about_app/about_app.dart';
 import 'package:mashatel/features/customers/ui/pages/control_panel/main_control_page.dart';
@@ -23,7 +21,7 @@ import 'package:settings_ui/settings_ui.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 class AppSettings extends StatefulWidget {
-  AppUser appUser;
+  final AppUser appUser;
   AppSettings(this.appUser);
   @override
   _AppSettingsState createState() => _AppSettingsState();
@@ -83,7 +81,9 @@ class _AppSettingsState extends State<AppSettings> {
                           child: Container(),
                         )
                       : CircleAvatar(
-                          child: Text(widget.appUser.userName[0].toUpperCase()),
+                          child: Text(widget.appUser != null
+                              ? widget.appUser.userName[0].toUpperCase()
+                              : ''),
                         ),
                   accountName: Text(widget.appUser.userName),
                   accountEmail: Text(widget.appUser.email)),

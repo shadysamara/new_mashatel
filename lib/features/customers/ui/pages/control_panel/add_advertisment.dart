@@ -6,21 +6,23 @@ import 'package:image_picker/image_picker.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mashatel/features/customers/blocs/app_get.dart';
-import 'package:mashatel/features/customers/modles/bigAds.dart';
+import 'package:mashatel/features/customers/modles/advertisment.dart';
 import 'package:mashatel/features/customers/modles/category.dart';
+import 'package:mashatel/features/customers/repositories/mashatel_client.dart';
 import 'package:mashatel/services/connectvity_service.dart';
 import 'package:mashatel/utils/custom_dialoug.dart';
 import 'package:mashatel/values/colors.dart';
 import 'package:mashatel/widgets/TextField.dart';
 import 'package:mashatel/widgets/custom_drawer.dart';
 import 'package:mashatel/widgets/primary_button.dart';
+import 'package:string_validator/string_validator.dart';
 
-class NewMainAd extends StatefulWidget {
+class AddNewPage extends StatefulWidget {
   @override
   _NewCategoryState createState() => _NewCategoryState();
 }
 
-class _NewCategoryState extends State<NewMainAd> {
+class _NewCategoryState extends State<AddNewPage> {
   AppGet appGet = Get.put(AppGet());
 
   GlobalKey<FormState> formKey = GlobalKey();
@@ -29,21 +31,17 @@ class _NewCategoryState extends State<NewMainAd> {
 
   File imageFile;
 
-  String nameEn;
+  String url;
 
-  String nameAr;
-
-  setCatNameAr(String value) {
-    this.nameAr = value;
-  }
-
-  setCatNameEn(String value) {
-    this.nameEn = value;
+  setUrl(String value) {
+    this.url = value;
   }
 
   nullValidation(String value) {
     if (value.isEmpty) {
       return translator.translate('null_error');
+    } else if (!isURL(value)) {
+      return translator.translate('invalid_url');
     }
   }
 
@@ -53,9 +51,10 @@ class _NewCategoryState extends State<NewMainAd> {
         formKey.currentState.save();
         if (ConnectivityService.connectivityStatus !=
             ConnectivityStatus.Offline) {
-          BigAds bigAds =
-              BigAds(contentAr: this.nameAr, contentEn: this.nameEn);
-          String catId = await appGet.addNewBigAd(bigAds);
+          Advertisment advertisment =
+              Advertisment(url: this.url, imageUrl: appGet.imagePath.value);
+          String catId =
+              await MashatelClient.mashatelClient.addNewAdv(advertisment);
           if (catId != null) {
             CustomDialougs.utils.showSackbar(
                 messageKey: 'success_ad_added', titleKey: 'success');
@@ -139,15 +138,9 @@ class _NewCategoryState extends State<NewMainAd> {
                   child: Column(
                     children: [
                       MyTextField(
-                        hintTextKey: 'nameAr',
+                        hintTextKey: 'url',
                         nofLines: 1,
-                        saveFunction: setCatNameAr,
-                        validateFunction: nullValidation,
-                      ),
-                      MyTextField(
-                        hintTextKey: 'nameEn',
-                        nofLines: 1,
-                        saveFunction: setCatNameEn,
+                        saveFunction: setUrl,
                         validateFunction: nullValidation,
                       )
                     ],

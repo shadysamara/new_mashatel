@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mashatel/features/customers/blocs/app_get.dart';
-import 'package:mashatel/features/customers/ui/pages/control_panel/about_app/about_app.dart';
 import 'package:mashatel/features/customers/ui/pages/control_panel/about_app/insert_about_app.dart';
-import 'package:mashatel/features/customers/ui/pages/control_panel/add_banner_ad.dart';
-import 'package:mashatel/features/customers/ui/pages/control_panel/add_main_ad.dart';
+import 'package:mashatel/features/customers/ui/pages/control_panel/add_advertisment.dart';
 import 'package:mashatel/features/customers/ui/pages/control_panel/new_category.dart';
 import 'package:mashatel/features/customers/ui/pages/control_panel/terms_and_conditions/insert_terms.dart';
 import 'package:mashatel/features/customers/ui/widgets/control_panel_widget.dart';
@@ -35,17 +32,10 @@ class ControlPanelPage extends StatelessWidget {
                 },
               ),
               ControlPnelWidget(
-                iconData: FontAwesomeIcons.image,
-                title: 'add_big_ad',
-                fun: () {
-                  Get.to(NewMainAd());
-                },
-              ),
-              ControlPnelWidget(
                 iconData: FontAwesomeIcons.ad,
                 title: 'add_ad',
                 fun: () {
-                  Get.to(NewBannerAd());
+                  Get.to(AddNewPage());
                 },
               ),
               ControlPnelWidget(

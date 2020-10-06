@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mashatel/features/customers/modles/about.dart';
+import 'package:mashatel/features/customers/modles/advertisment.dart';
 import 'package:mashatel/features/customers/modles/terms.dart';
 import 'package:mashatel/features/customers/repositories/mashatel_client.dart';
 import 'package:mashatel/features/customers/ui/pages/main_page.dart';
@@ -13,7 +14,6 @@ import 'package:mashatel/features/sign_in/models/userApp.dart';
 import 'package:mashatel/features/sign_in/providers/signInGetx.dart';
 import 'package:mashatel/features/sign_in/repositories/registration_client.dart';
 import 'package:mashatel/features/sign_in/ui/pages/login_page_test.dart';
-import 'package:mashatel/features/sign_in/ui/pages/testpage.dart';
 import 'package:mashatel/services/shared_prefrences_helper.dart';
 
 import 'features/customers/blocs/app_get.dart';
@@ -36,6 +36,9 @@ class _SplashScreenState extends State<SplashScreen>
   getAppUser() async {
     appUser = await RegistrationClient.registrationIntance
         .getMarketFromFirestore(spUser.userId);
+    if (spUser.isMarket) {
+      appGet.getMarketProducts(spUser.userId);
+    }
     appGet.setAppUser(appUser);
   }
 
@@ -49,13 +52,19 @@ class _SplashScreenState extends State<SplashScreen>
     appGet.setAboutModel(aboutApp);
   }
 
-  getAds() async {}
+  getAds() async {
+    List<Advertisment> ads =
+        await MashatelClient.mashatelClient.getAllAdvertisments();
+    print('afnaaaaaaaaaaaaaaaaaaaaaaaan ${ads.length}');
+    appGet.setAdvertisments(ads);
+  }
 
   getAllVariables() async {
     spUser = await SPHelper.spHelper.getUserCredintial();
     if (spUser != null) {
       getAppUser();
     }
+
     getAds();
     getTerms();
     getAboutApp();
@@ -70,7 +79,6 @@ class _SplashScreenState extends State<SplashScreen>
       if (spUser != null) {
         if (spUser.isCustomer) {
           signInGetx.usertype.value = userType.customer;
-          print(appGet.appUser.value.imagePath);
           Get.off(MainPage());
         }
         if (spUser.isMarket) {
@@ -108,7 +116,6 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   void afterFirstLayout(BuildContext context) {
-    // PROGRESS PAR FROM HERE
     appGet.getAllCategories();
   }
 }

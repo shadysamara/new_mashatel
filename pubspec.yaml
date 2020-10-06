@@ -42,7 +42,6 @@ dependencies:
   auto_size_text: ^2.1.0
   connectivity: ^0.4.9+2
   get: ^3.11.1
-  overlay_support: ^1.0.5
   firebase_core: "0.5.0"
   firebase_auth: "^0.18.0+1"
   cloud_firestore: "^0.14.0+2"

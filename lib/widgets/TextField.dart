@@ -5,12 +5,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mashatel/values/colors.dart';
 
 class MyTextField extends StatelessWidget {
-  String hintTextKey;
+  final String hintTextKey;
 
-  Function saveFunction;
-  Function validateFunction;
-  int nofLines;
-  TextInputType textInputType;
+  final Function saveFunction;
+  final Function validateFunction;
+  final int nofLines;
+  final TextInputType textInputType;
   MyTextField(
       {this.hintTextKey,
       this.saveFunction,

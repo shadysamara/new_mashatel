@@ -16,7 +16,7 @@ class MarketPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: BaseAppbar(appUser.userName),
+      appBar: BaseAppbar(appUser != null ? appUser.userName : ''),
       drawer: AppSettings(appGet.appUser.value),
       body: Container(
         margin: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
@@ -27,14 +27,14 @@ class MarketPage extends StatelessWidget {
                 childAspectRatio: 0.8,
                 crossAxisSpacing: 5.w,
                 mainAxisSpacing: 15.h),
-            itemCount: appGet.allProducts.length,
+            itemCount: appGet.products.length,
             itemBuilder: (context, index) {
               return GestureDetector(
                   onTap: () {
-                    Get.to(ProductDetails(appGet.allProducts[index], appUser));
+                    Get.to(ProductDetails(appGet.products[index], appUser));
                   },
                   child: Container(
-                    child: ProductWidget(appGet.allProducts[index]),
+                    child: ProductWidget(appGet.products[index]),
                   ));
             },
           );

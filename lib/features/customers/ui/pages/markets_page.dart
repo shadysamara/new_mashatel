@@ -26,7 +26,7 @@ class MarketsPage extends StatelessWidget {
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () {
-                  appGet.getAllProducts(appGet.markets[index].userId);
+                  appGet.getMarketProducts(appGet.markets[index].userId);
 
                   Get.to(MarketPage(appGet.markets[index]));
                 },

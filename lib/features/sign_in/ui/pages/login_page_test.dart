@@ -109,27 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       image: DecorationImage(
                           fit: BoxFit.cover,
                           image: AssetImage("assets/images/logo.png"))),
-                  child: Align(
-                    alignment: AlignmentDirectional.topStart,
-                    child: FlatButton.icon(
-                      onPressed: () {
-                        Get.back();
-                      },
-                      label: Text(
-                        translator.translate("back"),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                      ),
-                      icon: Icon(
-                        Icons.arrow_back,
-                        color: Colors.black,
-                      ),
-                    ),
-                  )),
+                  child: Container()),
               Container(
                 padding: EdgeInsets.only(left: 20.w, top: 15.h, right: 20.w),
                 child: Form(
@@ -175,6 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
             signInGetx.setUserType(userType.market);
             appGet.setMarketId(user.userId);
             appGet.setAppUser(user);
+            appGet.getMarketProducts(user.userId);
             Get.off(MarketPage(user));
 
             Get.off(MarketPage(user));

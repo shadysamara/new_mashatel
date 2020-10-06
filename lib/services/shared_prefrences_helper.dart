@@ -45,7 +45,6 @@ class SPHelper {
   Future<bool> checkIfFirstTime() async {
     prefs = await spHelper.initSharedPreferences();
     bool isFirstTime = prefs.getBool('isFirstTime');
-    bool result;
     if (isFirstTime == null) {
       setIsNotFirstTime();
       return true;

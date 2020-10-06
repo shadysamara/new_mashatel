@@ -7,16 +7,18 @@ import 'package:get/get.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/customers/modles/product.dart';
+import 'package:mashatel/features/customers/modles/product_model.dart';
 import 'package:mashatel/features/sign_in/models/userApp.dart';
 import 'package:mashatel/utils/custom_dialoug.dart';
 import 'package:mashatel/values/styles.dart';
 import 'package:mashatel/widgets/custom_appbar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mashatel/widgets/custom_drawer.dart';
+import 'package:mashatel/widgets/slider.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 class ProductDetails extends StatefulWidget {
-  Product product;
+  ProductModel product;
   AppUser appUser;
   ProductDetails(this.product, this.appUser);
 
@@ -52,6 +54,7 @@ class _ProductDetailsState extends State<ProductDetails> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     // TODO: implement build
     return Scaffold(
       drawer: AppSettings(appGet.appUser.value),
@@ -66,20 +69,10 @@ class _ProductDetailsState extends State<ProductDetails> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                height: 225.h,
+                height: (size.height / 4) + 30.h,
                 width: double.infinity,
-                child: CachedNetworkImage(
-                  fit: BoxFit.cover,
-                  imageUrl: widget.product.imageUrl,
-                  placeholder: (context, url) {
-                    return FlareActor(
-                      "assets/animations/loading.flr",
-                      sizeFromArtboard: true,
-                      alignment: Alignment.center,
-                      animation: "loading",
-                    );
-                  },
-                ),
+                child:
+                    CarouselWithIndicatorDemo(urls: widget.product.imagesUrls),
               ),
               SizedBox(
                 height: 15.h,
@@ -139,9 +132,15 @@ class _ProductDetailsState extends State<ProductDetails> {
               this.cuttentIndex = value;
             });
             if (value == 0) {
-              whatsAppMessnger();
+              widget.product.isInnerMessages == true
+                  ? whatsAppMessnger()
+                  : CustomDialougs.utils
+                      .showDialoug(messageKey: 'noMessage', titleKey: 'alert');
             } else if (value == 1) {
-              _makePhoneCall();
+              widget.product.isWithoutPhoneNumber == true
+                  ? _makePhoneCall()
+                  : CustomDialougs.utils
+                      .showDialoug(messageKey: 'noCall', titleKey: 'alert');
             }
           },
           currentIndex: this.cuttentIndex,
