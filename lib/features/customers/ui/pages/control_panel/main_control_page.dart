@@ -4,12 +4,14 @@ import 'package:get/get.dart';
 import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/customers/ui/pages/control_panel/about_app/insert_about_app.dart';
 import 'package:mashatel/features/customers/ui/pages/control_panel/add_advertisment.dart';
+import 'package:mashatel/features/customers/ui/pages/control_panel/all_ads.dart';
 import 'package:mashatel/features/customers/ui/pages/control_panel/new_category.dart';
 import 'package:mashatel/features/customers/ui/pages/control_panel/terms_and_conditions/insert_terms.dart';
 import 'package:mashatel/features/customers/ui/widgets/control_panel_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mashatel/widgets/custom_appbar.dart';
 import 'package:mashatel/widgets/custom_drawer.dart';
+import 'package:mashatel/features/customers/ui/pages/control_panel/reported_products.dart';
 
 class ControlPanelPage extends StatelessWidget {
   AppGet appGet = Get.put(AppGet());
@@ -35,7 +37,7 @@ class ControlPanelPage extends StatelessWidget {
                 iconData: FontAwesomeIcons.ad,
                 title: 'add_ad',
                 fun: () {
-                  Get.to(AddNewPage());
+                  Get.to(AllAds());
                 },
               ),
               ControlPnelWidget(
@@ -50,6 +52,13 @@ class ControlPanelPage extends StatelessWidget {
                 title: 'add_terms',
                 fun: () {
                   Get.to(NewTerms());
+                },
+              ),
+              ControlPnelWidget(
+                iconData: Icons.block,
+                title: 'reported_products',
+                fun: () {
+                  Get.to(ReportedProducts());
                 },
               )
             ],

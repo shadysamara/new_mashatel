@@ -5,13 +5,13 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 class CustomDialougs {
   CustomDialougs._();
   static CustomDialougs utils = CustomDialougs._();
-  showDialoug({String titleKey, String messageKey}) {
+  showDialoug({String titleKey, String messageKey, Function function}) {
     Get.defaultDialog(
         confirm: CupertinoButton(
             child: Text('Ok'),
             onPressed: () {
               print('ok');
-              Get.back();
+              function == null ? Get.back() : function();
             }),
         middleText: translator.translate(messageKey),
         title: translator.translate(titleKey));

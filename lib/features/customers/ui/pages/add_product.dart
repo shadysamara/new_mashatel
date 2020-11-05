@@ -200,7 +200,7 @@ class _MarketRegistrationPageState extends State<AddNewProduct> {
                       onChanged: (value) => setIsWithoutPhoneNumber(value)),
                   PrimaryButton(
                     buttonPressFun: saveForm,
-                    textKey: 'register',
+                    textKey: 'add',
                   )
                 ],
               ),

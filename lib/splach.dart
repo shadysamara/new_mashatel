@@ -4,10 +4,13 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:mashatel/features/customers/modles/about.dart';
 import 'package:mashatel/features/customers/modles/advertisment.dart';
+import 'package:mashatel/features/customers/modles/product_model.dart';
 import 'package:mashatel/features/customers/modles/terms.dart';
 import 'package:mashatel/features/customers/repositories/mashatel_client.dart';
+import 'package:mashatel/features/customers/ui/pages/control_panel/reported_products.dart';
 import 'package:mashatel/features/customers/ui/pages/main_page.dart';
 import 'package:mashatel/features/customers/ui/pages/market_page.dart';
 import 'package:mashatel/features/sign_in/models/userApp.dart';
@@ -55,14 +58,23 @@ class _SplashScreenState extends State<SplashScreen>
   getAds() async {
     List<Advertisment> ads =
         await MashatelClient.mashatelClient.getAllAdvertisments();
-    print('afnaaaaaaaaaaaaaaaaaaaaaaaan ${ads.length}');
     appGet.setAdvertisments(ads);
+  }
+
+  Future<List<ProductModel>> getBannedUsers() async {
+    List<ProductModel> products =
+        await MashatelClient.mashatelClient.getReportedProducts();
+
+    return products;
   }
 
   getAllVariables() async {
     spUser = await SPHelper.spHelper.getUserCredintial();
     if (spUser != null) {
       getAppUser();
+      if (spUser.isAdmin) {
+        getBannedUsers();
+      }
     }
 
     getAds();
@@ -94,8 +106,6 @@ class _SplashScreenState extends State<SplashScreen>
       } else {
         Get.off(LoginScreen());
       }
-
-      // Get.off(MainPage());
     });
   }
 

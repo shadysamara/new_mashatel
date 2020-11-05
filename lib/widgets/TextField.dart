@@ -41,10 +41,10 @@ class MyTextField extends StatelessWidget {
           ),
         ),
         validator: (value) {
-          return validateFunction(value);
+          return validateFunction(value.trim());
         },
-        onSaved: (newValue) => saveFunction(newValue),
-        onChanged: (value) => validateFunction(value),
+        onSaved: (newValue) => saveFunction(newValue.trim()),
+        onChanged: (value) => validateFunction(value.trim()),
         style: TextStyle(
           fontWeight: FontWeight.w500,
           fontSize: ScreenUtil().setSp(18, allowFontScalingSelf: true),

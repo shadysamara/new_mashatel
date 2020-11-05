@@ -8,6 +8,8 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/customers/modles/product.dart';
 import 'package:mashatel/features/customers/modles/product_model.dart';
+import 'package:mashatel/features/customers/repositories/mashatel_client.dart';
+import 'package:mashatel/features/messanger/ui/pages/massenger.dart';
 import 'package:mashatel/features/sign_in/models/userApp.dart';
 import 'package:mashatel/utils/custom_dialoug.dart';
 import 'package:mashatel/values/styles.dart';
@@ -29,18 +31,12 @@ class ProductDetails extends StatefulWidget {
 class _ProductDetailsState extends State<ProductDetails> {
   AppGet appGet = Get.put(AppGet());
   int cuttentIndex = 0;
-  whatsAppMessnger() async {
-    var phone = widget.appUser.phoneNumber;
-    var whatsappUrl = "";
-    if (Platform.isIOS) {
-      whatsappUrl = "whatsapp://wa.me/$phone}";
-    } else {
-      whatsappUrl = "whatsapp://send?phone=$phone}";
-    }
-    await UrlLauncher.canLaunch(whatsappUrl)
-        ? UrlLauncher.launch(whatsappUrl)
-        : CustomDialougs.utils.showDialoug(
-            messageKey: 'whats_app_not_installed', titleKey: 'alert');
+  startChat() async {
+    String myId = MashatelClient.mashatelClient.getUser();
+
+    String chatId = await MashatelClient.mashatelClient.createChat(
+        [myId, widget.appUser.userId], myId + widget.appUser.userId);
+    Get.to(MassengerPage(chatId: chatId));
   }
 
   _makePhoneCall() async {
@@ -133,7 +129,7 @@ class _ProductDetailsState extends State<ProductDetails> {
             });
             if (value == 0) {
               widget.product.isInnerMessages == true
-                  ? whatsAppMessnger()
+                  ? startChat()
                   : CustomDialougs.utils
                       .showDialoug(messageKey: 'noMessage', titleKey: 'alert');
             } else if (value == 1) {
@@ -141,6 +137,14 @@ class _ProductDetailsState extends State<ProductDetails> {
                   ? _makePhoneCall()
                   : CustomDialougs.utils
                       .showDialoug(messageKey: 'noCall', titleKey: 'alert');
+            } else if (value == 2) {
+              appGet.appUser.value.isAdmin
+                  ? MashatelClient.mashatelClient.removeProduct(
+                      widget.product.productId,
+                      widget.product.marketId,
+                      widget.appUser)
+                  : MashatelClient.mashatelClient.reportPorductByCustomer(
+                      widget.product.productId, widget.appUser.userId);
             }
           },
           currentIndex: this.cuttentIndex,
@@ -160,7 +164,7 @@ class _ProductDetailsState extends State<ProductDetails> {
             BottomNavigationBarItem(
                 title: Container(),
                 icon: Icon(
-                  Icons.info_outline,
+                  Icons.block,
                   color: Colors.red,
                 )),
             BottomNavigationBarItem(

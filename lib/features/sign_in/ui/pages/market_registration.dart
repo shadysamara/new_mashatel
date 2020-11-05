@@ -129,8 +129,10 @@ class _MarketRegistrationPageState extends State<MarketRegistrationPage> {
                     titleKey: 'market_snackbar_title');
                 signInGetx.setUserType(userType.market);
                 appGet.setMarketId(appUser.userId);
+                appGet.setAppUser(appUser);
+                await Future.delayed(Duration(seconds: 3));
 
-                Get.off(MarketPage(appUser));
+                Get.offAll(MarketPage(appUser));
               }
             } else {
               CustomDialougs.utils

@@ -14,6 +14,8 @@ class ProductModel {
   bool isWithoutPhoneNumber;
   String productId;
   String marketId;
+  int bannedUsers;
+  bool isBanned;
   ProductModel(
       {this.descAr,
       this.descEn,
@@ -25,6 +27,7 @@ class ProductModel {
       this.nameEn,
       this.price,
       this.productId,
+      this.isBanned,
       this.marketId});
   ProductModel.fromMap(Map map) {
     this.nameAr = map['nameAr'];
@@ -37,6 +40,7 @@ class ProductModel {
     this.isWithoutPhoneNumber = map['isWithoutPhoneNumber'];
     this.productId = map['productId'];
     this.marketId = map['marketId'];
+    this.isBanned = map['isBanned'];
   }
   toJson() {
     return {
@@ -48,7 +52,8 @@ class ProductModel {
       'isInnerMessages': this.isInnerMessages,
       'isWithoutPhoneNumber': this.isWithoutPhoneNumber,
       'price': this.price,
-      'marketId': this.marketId
+      'marketId': this.marketId,
+      'isBanned': false
     };
   }
 }

@@ -19,9 +19,14 @@ class AppGet {
   var marketId = ''.obs;
   var images = <Asset>[].obs;
   var products = <ProductModel>[].obs;
+  var bannedProducts = <ProductModel>[].obs;
   var advertisments = <Advertisment>[].obs;
   AboutAppModel aboutAppModel;
   TermsModel termsModel;
+
+  setBannedProducts(List<ProductModel> products) {
+    this.bannedProducts.value = products;
+  }
 
   setAdvertisments(List<Advertisment> ads) {
     this.advertisments.value = ads;

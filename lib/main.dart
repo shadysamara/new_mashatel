@@ -1,6 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
+import 'package:mashatel/error_screen.dart';
+import 'package:mashatel/features/messanger/ui/pages/massenger.dart';
+import 'package:mashatel/features/sign_in/ui/pages/testpage.dart';
 import 'package:mashatel/loading_screen.dart';
 import 'package:mashatel/services/connectvity_service.dart';
 import 'package:mashatel/splach.dart';
@@ -36,8 +40,17 @@ void main() async {
 
       // status bar color
       ));
-
+  HttpOverrides.global = new MyHttpOverrides();
   runApp(LocalizedApp(child: MyApp()));
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
 }
 
 Map<int, Color> color = {

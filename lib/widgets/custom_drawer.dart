@@ -6,11 +6,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/customers/ui/pages/contact_us_page.dart';
 import 'package:mashatel/features/customers/ui/pages/control_panel/about_app/about_app.dart';
 import 'package:mashatel/features/customers/ui/pages/control_panel/main_control_page.dart';
 import 'package:mashatel/features/customers/ui/pages/control_panel/terms_and_conditions/terms.dart';
 import 'package:mashatel/features/customers/ui/pages/market_page.dart';
+import 'package:mashatel/features/messanger/ui/pages/chats.dart';
+import 'package:mashatel/features/messanger/ui/pages/massenger.dart';
 import 'package:mashatel/features/sign_in/models/userApp.dart';
 import 'package:mashatel/services/shared_prefrences_helper.dart';
 import 'package:mashatel/utils/custom_dialoug.dart';
@@ -28,6 +31,7 @@ class AppSettings extends StatefulWidget {
 }
 
 class _AppSettingsState extends State<AppSettings> {
+  AppGet appGet = Get.put(AppGet());
   List<bool> isSelected = [true, false];
   String c = 'nasser';
   setIsSelectedList() async {
@@ -82,7 +86,7 @@ class _AppSettingsState extends State<AppSettings> {
                         )
                       : CircleAvatar(
                           child: Text(widget.appUser != null
-                              ? widget.appUser.userName[0].toUpperCase()
+                              ? appGet.appUser.value.userName[0].toUpperCase()
                               : ''),
                         ),
                   accountName: Text(widget.appUser.userName),
@@ -163,7 +167,9 @@ class _AppSettingsState extends State<AppSettings> {
                       //////////////////////////////////////////////////
                       widget.appUser.isAdmin == false
                           ? SettingsTile(
-                              onTap: () => whatsAppMessnger(),
+                              onTap: () {
+                                Get.to(ChatsPage());
+                              },
                               title: translator.translate('messages'),
                               leading: Icon(Icons.email,
                                   color: AppColors.primaryColor),
