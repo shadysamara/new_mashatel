@@ -17,6 +17,7 @@ import 'package:mashatel/features/sign_in/models/userApp.dart';
 import 'package:mashatel/features/sign_in/providers/signInGetx.dart';
 import 'package:mashatel/features/sign_in/repositories/registration_client.dart';
 import 'package:mashatel/features/sign_in/ui/pages/login_page_test.dart';
+import 'package:mashatel/services/fcm.dart';
 import 'package:mashatel/services/shared_prefrences_helper.dart';
 
 import 'features/customers/blocs/app_get.dart';
@@ -55,6 +56,12 @@ class _SplashScreenState extends State<SplashScreen>
     appGet.setAboutModel(aboutApp);
   }
 
+  getChats(String myId) async {
+    List<Map<String, dynamic>> allChats =
+        await MashatelClient.mashatelClient.getAllChats(myId);
+    appGet.allChats.value = allChats;
+  }
+
   getAds() async {
     List<Advertisment> ads =
         await MashatelClient.mashatelClient.getAllAdvertisments();
@@ -72,6 +79,7 @@ class _SplashScreenState extends State<SplashScreen>
     spUser = await SPHelper.spHelper.getUserCredintial();
     if (spUser != null) {
       getAppUser();
+      getChats(spUser.userId);
       if (spUser.isAdmin) {
         getBannedUsers();
       }
@@ -80,6 +88,8 @@ class _SplashScreenState extends State<SplashScreen>
     getAds();
     getTerms();
     getAboutApp();
+    FireMessaging.firebaseMessaging.initFirebaseMessaging(context);
+    FireMessaging.firebaseMessaging.subscribeTopic();
   }
 
   @override

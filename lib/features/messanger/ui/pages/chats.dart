@@ -1,7 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/customers/repositories/mashatel_client.dart';
+import 'package:mashatel/features/customers/ui/pages/shimmer_products.dart';
 import 'package:mashatel/features/messanger/ui/pages/massenger.dart';
 import 'package:mashatel/widgets/custom_appbar.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ChatsPage extends StatelessWidget {
   @override
@@ -18,50 +24,71 @@ class ChatsPage extends StatelessWidget {
 class AllExistsChats extends StatelessWidget {
   String myId;
   AllExistsChats(this.myId);
+  AppGet appGet = Get.find();
   @override
   Widget build(BuildContext context) {
+    print(appGet.allChats[0]['otherUserMap']);
     // TODO: implement build
-    return Container(
-      child: FutureBuilder<List<Map>>(
-        future: MashatelClient.mashatelClient.getAllChats(myId),
-        builder: (context, snapshot) {
-          print(snapshot.data);
-          if (snapshot.hasData && snapshot.data == null) {
-            return Center(
-              child: Text('No Chats Found'),
-            );
-          } else if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else {
-            List<Map<dynamic, dynamic>> data = snapshot.data;
-            return ListView.builder(
-              itemCount: data.length,
+    return Obx(() {
+      return appGet.allChats.isNotEmpty
+          ? ListView.builder(
+              itemCount: appGet.allChats.length,
               itemBuilder: (context, index) {
-                String allUsers = data[index]['otherUserMap']['isMarket']
-                    ? '${data[index]['otherUserMap']['userName']},${data[index]['otherUserMap']['companyName']}'
-                    : '${data[index]['otherUserMap']['userName']}';
+                String allUsers = appGet.allChats[index]['otherUserMap']
+                        ['isMarket']
+                    ? '${appGet.allChats[index]['otherUserMap']['userName']} (${appGet.allChats[index]['otherUserMap']['companyName']})'
+                    : '${appGet.allChats[index]['otherUserMap']['userName']}';
 
-                return Card(
-                  child: ListTile(
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (context) {
-                          return MassengerPage(
-                            chatId: data[index]['chatId'],
-                          );
-                        },
-                      ));
-                    },
-                    title: Text(allUsers),
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) {
+                        return MassengerPage(
+                          appGet.allChats[index]['otherUserId'],
+                          chatId: appGet.allChats[index]['chatId'],
+                        );
+                      },
+                    ));
+                  },
+                  child: Card(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10.w, vertical: 10.h),
+                      child: Row(
+                        children: [
+                          appGet.allChats[index]['otherUserMap']['isMarket']
+                              ? Container(
+                                  margin:
+                                      EdgeInsets.symmetric(horizontal: 10.w),
+                                  width: 70.w,
+                                  height: 70.h,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                        image: CachedNetworkImageProvider(
+                                            appGet.allChats[index]
+                                                ['otherUserMap']['imagePath']),
+                                        fit: BoxFit.fill),
+                                  ),
+                                )
+                              : Container(
+                                  margin:
+                                      EdgeInsets.symmetric(horizontal: 10.w),
+                                  child: CircleAvatar(
+                                    child: Text(allUsers[0].toUpperCase()),
+                                  ),
+                                ),
+                          Text(allUsers)
+                        ],
+                      ),
+                    ),
                   ),
                 );
               },
+            )
+          : Center(
+              child: Text(translator.translate('no_chats')),
             );
-          }
-        },
-      ),
-    );
+    });
   }
 }

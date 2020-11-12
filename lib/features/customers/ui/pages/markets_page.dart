@@ -17,55 +17,61 @@ class MarketsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Scaffold(
-      appBar: BaseAppbar('markets'),
-      drawer: AppSettings(appGet.appUser.value),
-      body: Container(
-        padding: EdgeInsets.symmetric(vertical: 15.h),
-        child: Obx(() {
-          return ListView.builder(
-            itemCount: appGet.markets.length,
-            itemBuilder: (context, index) {
-              return index % 3 == 0
-                  ? Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 15.w),
-                          child: GestureDetector(
-                            onTap: () {
-                              appGet.getMarketProducts(
-                                  appGet.markets[index].userId);
+    return WillPopScope(
+      onWillPop: () {
+        appGet.resetMarkets();
+        return Future.value(true);
+      },
+      child: Scaffold(
+        appBar: BaseAppbar('markets'),
+        // drawer: AppSettings(appGet.appUser.value),
+        body: Container(
+          padding: EdgeInsets.symmetric(vertical: 15.h),
+          child: Obx(() {
+            return ListView.builder(
+              itemCount: appGet.markets.length,
+              itemBuilder: (context, index) {
+                return index % 3 == 0
+                    ? Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 15.w),
+                            child: GestureDetector(
+                              onTap: () {
+                                appGet.getMarketProducts(
+                                    appGet.markets[index].userId);
 
-                              Get.to(MarketPage(appGet.markets[index]));
-                            },
-                            child: MarketWidget(
-                              appUser: appGet.markets[index],
+                                Get.to(MarketPage(appGet.markets[index]));
+                              },
+                              child: MarketWidget(
+                                appUser: appGet.markets[index],
+                              ),
                             ),
                           ),
-                        ),
-                        AdvertismentWidget(
-                            appGet.advertisments[
-                                Random().nextInt(appGet.advertisments.length)],
-                            10),
-                      ],
-                    )
-                  : Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 15.w),
-                      child: GestureDetector(
-                        onTap: () {
-                          appGet
-                              .getMarketProducts(appGet.markets[index].userId);
+                          AdvertismentWidget(
+                              appGet.advertisments[Random()
+                                  .nextInt(appGet.advertisments.length)],
+                              10),
+                        ],
+                      )
+                    : Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 15.w),
+                        child: GestureDetector(
+                          onTap: () {
+                            appGet.getMarketProducts(
+                                appGet.markets[index].userId);
 
-                          Get.to(MarketPage(appGet.markets[index]));
-                        },
-                        child: MarketWidget(
-                          appUser: appGet.markets[index],
+                            Get.to(MarketPage(appGet.markets[index]));
+                          },
+                          child: MarketWidget(
+                            appUser: appGet.markets[index],
+                          ),
                         ),
-                      ),
-                    );
-            },
-          );
-        }),
+                      );
+              },
+            );
+          }),
+        ),
       ),
     );
   }

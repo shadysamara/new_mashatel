@@ -19,8 +19,9 @@ class MarketPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: BaseAppbar(appUser != null ? appUser.userName : ''),
       drawer: AppSettings(appGet.appUser.value),
+      appBar: BaseAppbar(appUser != null ? appUser.userName : ''),
+      // drawer: AppSettings(appGet.appUser.value),
       body: Column(
         children: [
           Expanded(

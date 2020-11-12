@@ -7,6 +7,7 @@ class Message {
   String date;
   String text;
   FieldValue timestamp;
+  String senderName;
 
   Message(
       {this.senderId,
@@ -14,7 +15,8 @@ class Message {
       this.hour,
       this.date,
       this.timestamp,
-      this.recieverId});
+      this.recieverId,
+      this.senderName});
   Message.frmMap(Map map) {
     this.senderId = map['senderId'];
     this.recieverId = map['recieverId'];
@@ -29,7 +31,8 @@ class Message {
       'hour': this.hour,
       'date': this.date,
       'text': this.text,
-      'timeStamp': this.timestamp
+      'timeStamp': this.timestamp,
+      'senderName': this.senderName
     };
   }
 }

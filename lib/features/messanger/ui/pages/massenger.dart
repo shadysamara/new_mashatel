@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
@@ -10,10 +12,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MassengerPage extends StatelessWidget {
   String chatId;
+  String otherId;
 
-  MassengerPage({this.chatId});
+  MassengerPage(this.otherId, {this.chatId});
   TextEditingController textEditingController = TextEditingController();
-
+  ScrollController _controller = ScrollController();
   ///////////////////////////////////////////////////////////////////
   Widget buildMessage({Message messageData, String myId, context}) {
     if (messageData.senderId == myId) {
@@ -245,6 +248,7 @@ class MassengerPage extends StatelessWidget {
                         .toList();
 
                     return ListView.builder(
+                      controller: _controller,
                       itemCount: messages.length,
                       itemBuilder: (context, index) {
                         return buildMessage(
@@ -264,6 +268,12 @@ class MassengerPage extends StatelessWidget {
                 children: [
                   Expanded(
                       child: TextField(
+                    onTap: () {
+                      Timer(
+                          Duration(milliseconds: 300),
+                          () => _controller
+                              .jumpTo(_controller.position.maxScrollExtent));
+                    },
                     controller: textEditingController,
                     decoration: InputDecoration(
                         border: OutlineInputBorder(borderSide: BorderSide.none),
@@ -271,18 +281,25 @@ class MassengerPage extends StatelessWidget {
                   )),
                   GestureDetector(
                     onTap: () {
-                      DateTime dateTime = DateTime.now();
-                      Message message = Message(
-                          text: textEditingController.text,
-                          hour: '${dateTime.hour}:${dateTime.minute}',
-                          date:
-                              '${dateTime.year}-${dateTime.month}-${dateTime.day}',
-                          senderId: MashatelClient.mashatelClient.getUser(),
-                          timestamp: FieldValue.serverTimestamp());
+                      if (textEditingController.text.trim().isNotEmpty) {
+                        DateTime dateTime = DateTime.now();
+                        Message message = Message(
+                            text: textEditingController.text,
+                            hour: '${dateTime.hour}:${dateTime.minute}',
+                            date:
+                                '${dateTime.year}-${dateTime.month}-${dateTime.day}',
+                            senderId: MashatelClient.mashatelClient.getUser(),
+                            recieverId: this.otherId,
+                            timestamp: FieldValue.serverTimestamp());
 
-                      MashatelClient.mashatelClient
-                          .newMessage(chatId: chatId, message: message);
-                      textEditingController.clear();
+                        MashatelClient.mashatelClient
+                            .newMessage(chatId: chatId, message: message);
+                        textEditingController.clear();
+                        Timer(
+                            Duration(milliseconds: 300),
+                            () => _controller
+                                .jumpTo(_controller.position.maxScrollExtent));
+                      }
                     },
                     child: Container(
                       height: 60.h,

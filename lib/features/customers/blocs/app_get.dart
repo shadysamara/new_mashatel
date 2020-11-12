@@ -23,6 +23,12 @@ class AppGet {
   var advertisments = <Advertisment>[].obs;
   AboutAppModel aboutAppModel;
   TermsModel termsModel;
+  var allChats = <Map<String, dynamic>>[].obs;
+
+  resetMarkets() {
+    this.markets.value = [];
+    this.products.value = [];
+  }
 
   setBannedProducts(List<ProductModel> products) {
     this.bannedProducts.value = products;

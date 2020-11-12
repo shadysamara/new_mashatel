@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/sign_in/models/sp_user.dart';
 import 'package:mashatel/features/sign_in/providers/signInGetx.dart';
+import 'package:mashatel/services/fcm.dart';
 import 'package:mashatel/services/shared_prefrences_helper.dart';
 import 'package:mashatel/splach.dart';
 import 'package:mashatel/utils/HandleFirebaseErrorMessages.dart';
@@ -24,7 +25,7 @@ class Auth {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
-
+      FireMessaging.firebaseMessaging.saveDeviceToken(userCredential.user.uid);
       if (userCredential != null) {
         String userId = userCredential.user.uid;
         SpUser spUser = await SPHelper.spHelper.setUserCredintials(
@@ -64,6 +65,7 @@ class Auth {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
+      FireMessaging.firebaseMessaging.saveDeviceToken(userCredential.user.uid);
       if (userCredential != null) {
         String userId = userCredential.user.uid;
         SpUser spUser = await SPHelper.spHelper.setUserCredintials(

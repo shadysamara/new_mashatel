@@ -36,7 +36,7 @@ class _ProductDetailsState extends State<ProductDetails> {
 
     String chatId = await MashatelClient.mashatelClient.createChat(
         [myId, widget.appUser.userId], myId + widget.appUser.userId);
-    Get.to(MassengerPage(chatId: chatId));
+    Get.to(MassengerPage(widget.appUser.userId, chatId: chatId));
   }
 
   _makePhoneCall() async {
@@ -53,7 +53,7 @@ class _ProductDetailsState extends State<ProductDetails> {
     Size size = MediaQuery.of(context).size;
     // TODO: implement build
     return Scaffold(
-      drawer: AppSettings(appGet.appUser.value),
+      // drawer: AppSettings(appGet.appUser.value),
       appBar: BaseAppbar(
         translator.currentLanguage == "ar"
             ? widget.product.nameAr

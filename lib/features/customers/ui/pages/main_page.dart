@@ -39,13 +39,13 @@ class _MainPageState extends State<MainPage> {
             )),
             Expanded(
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.w),
                 child: Obx(() {
                   return appGet.allCategories.isNotEmpty
                       ? ListView.builder(
                           itemCount: appGet.allCategories.length,
                           itemBuilder: (context, index) {
                             return Container(
+                              margin: EdgeInsets.symmetric(horizontal: 10.w),
                               child: Obx(() {
                                 return GestureDetector(
                                   onTap: () {
@@ -62,7 +62,7 @@ class _MainPageState extends State<MainPage> {
                           },
                         )
                       : Center(
-                          child: Text('No Data Found'),
+                          child: Text(translator.translate('no_data')),
                         );
                 }),
               ),

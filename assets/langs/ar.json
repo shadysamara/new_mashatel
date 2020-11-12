@@ -308,7 +308,27 @@
   "startedAVoiceCall": "{} بدأ مكالمة صوتية.",
   "startedAGroupVoiceCall": "{} بدأ مكالمة صوتية جماعية.",
   "groupVoiceCalling": "جاري طلب مكالمة صوتية جماعية مع {}",
-  "isGroupVoiceCallingYouAnd": "{caller} يطلب مكالمة صوتية جماعية معك و مع {groupName}"
+  "isGroupVoiceCallingYouAnd": "{caller} يطلب مكالمة صوتية جماعية معك و مع {groupName}",
+
+
+  "password_error":"يجب أن تكون كلمة المرور اكبر من 8 احرف",
+
+  "messenger":"الرسائل",
+  "messenger_label":"اكتب رسالتك هنا",
+  "chats":"المحادثات",
+  "confirmation":"تأكيد",
+  "report_confirm":"تم ارسال ابلاغك بنجاح",
+  "report_appBar":"المنتجات المبلغ عنها",
+  "no_reports":"لا يوجد ابلاغات",
+  "reported_by":"تم الابلاغ عن طريق",
+  "users":"مستخدين",
+  "delete_confirmation":"تم حذف المنتج بنجاح",
+  "ad_delete_confirmation":"تم حذف الاعلان بنجاح",
+  "reported_products":"المنتجات المبلغ عنها",
+  "all_ads":"جميع الاعلانات",
+  "launch_error":"لا يمكن فتح الرابط، الرجاء تفقد اعدادات الجهاز",
+  "no_chats":"لا يوجد محادثات"
+  
 
 
 

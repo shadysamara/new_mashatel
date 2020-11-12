@@ -5,6 +5,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mashatel/features/customers/blocs/app_get.dart';
+import 'package:mashatel/features/customers/repositories/mashatel_client.dart';
 import 'package:mashatel/features/customers/ui/pages/main_page.dart';
 import 'package:mashatel/features/customers/ui/pages/market_page.dart';
 import 'package:mashatel/features/sign_in/models/sp_user.dart';
@@ -133,6 +134,12 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  getChats(String myId) async {
+    List<Map<String, dynamic>> allChats =
+        await MashatelClient.mashatelClient.getAllChats(myId);
+    appGet.allChats.value = allChats;
+  }
+
   Future<void> checkUsername() async {
     final mFormData = loginFormKey.currentState;
     if (!mFormData.validate()) {
@@ -151,6 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
         if (!user.isNull) {
           signInGetx.pr.hide();
+          getChats(user.userId);
           if (user.isMarket) {
             signInGetx.setUserType(userType.market);
             appGet.setMarketId(user.userId);

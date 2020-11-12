@@ -420,23 +420,6 @@ class MashatelClient {
     }
   }
 
-//////////////////////////////////////////////////////////////
-  Future<String> insertNewMessage(
-      Message message, String myId, String otherId) async {
-    try {
-      DocumentReference documentReference = await firestore
-          .collection('Chats')
-          .doc(myId)
-          .collection('Conversations')
-          .doc(otherId)
-          .collection('Messages')
-          .add(message.toJson());
-      return documentReference.id;
-    } on Exception catch (e) {
-      print(e);
-    }
-  }
-
 ////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
   Future<String> createChat(List<String> usersIds, String chatId) async {
