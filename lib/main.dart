@@ -9,6 +9,7 @@ import 'package:mashatel/features/sign_in/ui/pages/testpage.dart';
 import 'package:mashatel/loading_screen.dart';
 import 'package:mashatel/services/connectvity_service.dart';
 import 'package:mashatel/splach.dart';
+import 'package:mashatel/testScreen.dart';
 import 'package:mashatel/values/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -183,7 +184,7 @@ class _BrokerPageState extends State<BrokerPage> {
 
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
-          return SplashScreen();
+          return TestScreen();
         }
 
         // Otherwise, show something whilst waiting for initialization to complete

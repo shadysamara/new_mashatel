@@ -41,14 +41,7 @@ class ControlPnelWidget extends StatelessWidget {
               Container(
                 width: 120.w,
                 height: 120.h,
-                decoration: BoxDecoration(
-                  gradient: new LinearGradient(
-                      colors: [AppColors.primaryColor, Colors.white],
-                      begin: const FractionalOffset(0.0, 0.0),
-                      end: const FractionalOffset(3.0, 0.0),
-                      stops: [0.0, 1.0],
-                      tileMode: TileMode.clamp),
-                ),
+                decoration: BoxDecoration(color: AppColors.primaryColor),
                 child: Icon(
                   this.iconData,
                   color: Colors.white,
