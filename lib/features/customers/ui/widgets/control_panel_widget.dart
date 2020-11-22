@@ -39,7 +39,7 @@ class ControlPnelWidget extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                width: 120.w,
+                width: 100.w,
                 height: 120.h,
                 decoration: BoxDecoration(color: AppColors.primaryColor),
                 child: Icon(

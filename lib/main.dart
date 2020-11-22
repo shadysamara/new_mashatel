@@ -146,6 +146,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: _myTheme,
       localizationsDelegates: translator.delegates,
       locale: translator.locale,
@@ -184,7 +185,7 @@ class _BrokerPageState extends State<BrokerPage> {
 
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
-          return TestScreen();
+          return SplashScreen();
         }
 
         // Otherwise, show something whilst waiting for initialization to complete

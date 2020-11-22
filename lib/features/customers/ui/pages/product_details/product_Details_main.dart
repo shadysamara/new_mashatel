@@ -65,7 +65,7 @@ class _ProductDetailsState extends State<ProductDetails> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                height: (size.height / 4) + 30.h,
+                height: (size.height / 4) + 40.h,
                 width: double.infinity,
                 child:
                     CarouselWithIndicatorDemo(urls: widget.product.imagesUrls),
