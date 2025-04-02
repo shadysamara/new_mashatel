@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
 
 class LoadingListPage extends StatefulWidget {
@@ -11,6 +12,10 @@ class _LoadingListPageState extends State<LoadingListPage> {
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.init(context,
+        width: 392.72727272727275,
+        height: 850.9090909090909,
+        allowFontScaling: true);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),

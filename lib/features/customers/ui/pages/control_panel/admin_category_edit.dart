@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -15,12 +16,17 @@ import 'package:mashatel/widgets/custom_appbar.dart';
 import 'package:mashatel/widgets/custom_drawer.dart';
 import 'package:mashatel/widgets/primary_button.dart';
 
-class NewCategory extends StatefulWidget {
+class EditCategory extends StatefulWidget {
+  String imageUrl;
+  String nameAr;
+  String nameEn;
+  String catId;
+  EditCategory({this.imageUrl, this.nameAr, this.nameEn, this.catId});
   @override
   _NewCategoryState createState() => _NewCategoryState();
 }
 
-class _NewCategoryState extends State<NewCategory> {
+class _NewCategoryState extends State<EditCategory> {
   AppGet appGet = Get.put(AppGet());
 
   GlobalKey<FormState> formKey = GlobalKey();
@@ -47,24 +53,24 @@ class _NewCategoryState extends State<NewCategory> {
     }
   }
 
+  initState() {
+    super.initState();
+    appGet.imagePath.value = widget.imageUrl;
+  }
+
   saveForm() async {
     if (formKey.currentState.validate()) {
       if (appGet.imagePath.value.isNotEmpty) {
         formKey.currentState.save();
         if (ConnectivityService.connectivityStatus !=
             ConnectivityStatus.Offline) {
-          Category category =
-              Category(nameAr: this.nameAr, nameEn: this.nameEn);
-          String catId = await appGet.addNewCategory(category);
-          if (catId != null) {
-            CustomDialougs.utils.showSackbar(
-                messageKey: 'success_category_added', titleKey: 'success');
-            appGet.imagePath.value = '';
-          } else {
-            CustomDialougs.utils.showSackbar(
-                messageKey: 'faild_category_added', titleKey: 'faild');
-            appGet.imagePath.value = '';
-          }
+          Category category = Category(
+              nameAr: this.nameAr,
+              nameEn: this.nameEn,
+              imagePath: appGet.imagePath.value,
+              catId: widget.catId);
+
+          await appGet.updateCategory(category);
         } else {
           CustomDialougs.utils
               .showDialoug(messageKey: 'network_error', titleKey: 'alert');
@@ -83,7 +89,7 @@ class _NewCategoryState extends State<NewCategory> {
         height: 850.9090909090909,
         allowFontScaling: true);
     return Scaffold(
-      appBar: BaseAppbar('new_category'),
+      appBar: BaseAppbar('edit_cat'),
       endDrawer: AppSettings(appGet.appUser.value),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 30.h),
@@ -117,10 +123,17 @@ class _NewCategoryState extends State<NewCategory> {
                                 )),
                           )
                     : Container(
-                        width: 150.w,
-                        height: 150.h,
-                        color: Colors.grey[400],
-                        child: Icon(Icons.add),
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: CachedNetworkImageProvider(
+                                    widget.imageUrl))),
+                        width: 200.w,
+                        height: 200.h,
+                        child: Icon(
+                          Icons.add,
+                          color: Colors.white,
+                          size: 35,
+                        ),
                       );
               })),
               SizedBox(
@@ -142,12 +155,16 @@ class _NewCategoryState extends State<NewCategory> {
                   child: Column(
                     children: [
                       MyTextField(
+                        isEdit: true,
+                        initialValue: widget.nameAr,
                         hintTextKey: 'nameAr',
                         nofLines: 1,
                         saveFunction: setCatNameAr,
                         validateFunction: nullValidation,
                       ),
                       MyTextField(
+                        isEdit: true,
+                        initialValue: widget.nameEn,
                         hintTextKey: 'nameEn',
                         nofLines: 1,
                         saveFunction: setCatNameEn,
@@ -157,7 +174,7 @@ class _NewCategoryState extends State<NewCategory> {
                   )),
               PrimaryButton(
                   color: AppColors.primaryColor,
-                  textKey: 'add',
+                  textKey: 'edit',
                   buttonPressFun: saveForm)
             ],
           ),

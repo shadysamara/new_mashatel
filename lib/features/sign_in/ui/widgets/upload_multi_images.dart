@@ -59,6 +59,10 @@ class _uploadFileState extends State<uploadMultibleFile> {
 //////////////////////////////////////////////////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.init(context,
+        width: 392.72727272727275,
+        height: 850.9090909090909,
+        allowFontScaling: true);
     return Container(
         width: double.infinity,
         height: 60.h,

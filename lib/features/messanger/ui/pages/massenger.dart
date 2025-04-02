@@ -1,9 +1,10 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/customers/repositories/mashatel_client.dart';
 import 'package:mashatel/features/messanger/models/message_model.dart';
 import 'package:mashatel/values/colors.dart';
@@ -13,6 +14,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class MassengerPage extends StatelessWidget {
   String chatId;
   String otherId;
+  AppGet appGet = Get.find();
 
   MassengerPage(this.otherId, {this.chatId});
   TextEditingController textEditingController = TextEditingController();
@@ -216,6 +218,10 @@ class MassengerPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.init(context,
+        width: 392.72727272727275,
+        height: 850.9090909090909,
+        allowFontScaling: true);
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: BaseAppbar('messenger'),
@@ -251,6 +257,10 @@ class MassengerPage extends StatelessWidget {
                       controller: _controller,
                       itemCount: messages.length,
                       itemBuilder: (context, index) {
+                        Timer(
+                            Duration(milliseconds: 300),
+                            () => _controller
+                                .jumpTo(_controller.position.maxScrollExtent));
                         return buildMessage(
                             context: context,
                             messageData: messages[index],

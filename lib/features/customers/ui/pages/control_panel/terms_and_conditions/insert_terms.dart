@@ -74,9 +74,12 @@ class _NewCategoryState extends State<NewTerms> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    ScreenUtil.init(context,
+        width: 392.72727272727275,
+        height: 850.9090909090909,
+        allowFontScaling: true);
     return Scaffold(
-      drawer: AppSettings(appGet.appUser.value),
+      endDrawer: AppSettings(appGet.appUser.value),
       appBar: BaseAppbar('conditions'),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 30.h),

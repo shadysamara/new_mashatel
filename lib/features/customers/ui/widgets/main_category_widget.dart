@@ -1,17 +1,25 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mashatel/features/customers/modles/category.dart';
+import 'package:mashatel/features/customers/repositories/mashatel_client.dart';
+import 'package:mashatel/features/customers/ui/pages/control_panel/admin_category_edit.dart';
 import 'package:mashatel/values/radii.dart';
+import 'package:mashatel/widgets/primary_button.dart';
 
 class CategoryWidget extends StatelessWidget {
   final Category category;
-  CategoryWidget({this.category});
+  bool isAdmin;
+  CategoryWidget({this.category, this.isAdmin = false});
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    ScreenUtil.init(context,
+        width: 392.72727272727275,
+        height: 850.9090909090909,
+        allowFontScaling: true);
     return Container(
       margin: EdgeInsets.fromLTRB(5.w, 10.h, 5.w, 10.h),
       decoration: BoxDecoration(
@@ -46,6 +54,34 @@ class CategoryWidget extends StatelessWidget {
                     '${translator.currentLanguage == 'ar' ? category.nameAr : category.nameEn}'),
               ),
             ),
+            isAdmin
+                ? Column(
+                    children: [
+                      IconButton(
+                          icon: Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
+                          onPressed: () {
+                            MashatelClient.mashatelClient
+                                .deleteCategory(category.catId);
+                          }),
+                      IconButton(
+                          icon: Icon(
+                            Icons.edit,
+                            color: Colors.blueAccent,
+                          ),
+                          onPressed: () {
+                            Get.to(EditCategory(
+                              imageUrl: category.imagePath,
+                              nameAr: category.nameAr,
+                              nameEn: category.nameEn,
+                              catId: category.catId,
+                            ));
+                          })
+                    ],
+                  )
+                : Container()
           ],
         ),
       ),

@@ -10,9 +10,12 @@ class TermsPage extends StatelessWidget {
   AppGet appGet = Get.put(AppGet());
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    ScreenUtil.init(context,
+        width: 392.72727272727275,
+        height: 850.9090909090909,
+        allowFontScaling: true);
     return Scaffold(
-      drawer: AppSettings(appGet.appUser.value),
+      endDrawer: AppSettings(appGet.appUser.value),
       appBar: AppBar(
         title: Text(translator.translate('conditions')),
       ),
@@ -41,9 +44,15 @@ class TermsPage extends StatelessWidget {
                   ? Center(
                       child: Text(translator.translate('no_data')),
                     )
-                  : Text(translator.currentLanguage == 'ar'
-                      ? appGet.termsModel.nameAr
-                      : appGet.termsModel.nameEn),
+                  : SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Text(translator.currentLanguage == 'ar'
+                              ? appGet.termsModel.nameAr
+                              : appGet.termsModel.nameEn),
+                        ],
+                      ),
+                    ),
             )
           ],
         ),

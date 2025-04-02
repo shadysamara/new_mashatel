@@ -7,7 +7,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:mashatel/features/sign_in/models/userApp.dart';
 import 'package:mashatel/features/sign_in/providers/signInGetx.dart';
+import 'package:mashatel/features/sign_in/repositories/registration_client.dart';
+import 'package:mashatel/features/sign_in/ui/pages/market_location_page.dart';
 import 'package:mashatel/features/sign_in/ui/widgets/upload_file.dart';
 import 'package:mashatel/services/connectvity_service.dart';
 import 'package:mashatel/utils/custom_dialoug.dart';
@@ -19,6 +22,9 @@ import 'package:mashatel/widgets/primary_button.dart';
 import 'package:string_validator/string_validator.dart';
 
 class EditMarketProfilePage extends StatefulWidget {
+  AppUser appUser;
+  EditMarketProfilePage({this.appUser});
+
   @override
   _EditMarketProfilePageState createState() => _EditMarketProfilePageState();
 }
@@ -43,23 +49,23 @@ class _EditMarketProfilePageState extends State<EditMarketProfilePage> {
   final SignInGetx signInGetx = Get.put(SignInGetx());
 
   saveCompanyName(String value) {
-    this.companyName = value;
+    widget.appUser.companyName = value;
   }
 
   saveuserName(String value) {
-    this.userName = value;
+    widget.appUser.userName = value;
   }
 
   savepassword(String value) {
-    this.password = value;
+    widget.appUser.password = value;
   }
 
   saveemail(String value) {
-    this.email = value;
+    widget.appUser.email = value;
   }
 
   savephoneNumber(String value) {
-    this.phoneNumber = value;
+    widget.appUser.phoneNumber = value;
   }
 
   saveLogo() async {
@@ -68,7 +74,7 @@ class _EditMarketProfilePageState extends State<EditMarketProfilePage> {
   }
 
   savecomapnyActivity(String value) {
-    this.comapnyActivity = value;
+    widget.appUser.comapnyActivity = value;
   }
 
   validateEmailFunction(String value) {
@@ -95,18 +101,15 @@ class _EditMarketProfilePageState extends State<EditMarketProfilePage> {
 
   saveForm() {
     if (editMarketProfile.currentState.validate()) {
-      if (signInGetx.file != null) {
-        editMarketProfile.currentState.save();
-        if (ConnectivityService.connectivityStatus !=
-            ConnectivityStatus.Offline) {
-          ////////////////////////////
-        } else {
-          CustomDialougs.utils
-              .showDialoug(messageKey: 'network_error', titleKey: 'alert');
-        }
+      editMarketProfile.currentState.save();
+      if (ConnectivityService.connectivityStatus !=
+          ConnectivityStatus.Offline) {
+        widget.appUser.marketLogo = signInGetx.file;
+        RegistrationClient.registrationIntance
+            .updateMarketProfile(widget.appUser.userId, widget.appUser);
       } else {
         CustomDialougs.utils
-            .showDialoug(messageKey: 'file_error', titleKey: 'missing_element');
+            .showDialoug(messageKey: 'network_error', titleKey: 'alert');
       }
     } else {
       return;
@@ -115,7 +118,10 @@ class _EditMarketProfilePageState extends State<EditMarketProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    ScreenUtil.init(context,
+        width: 392.72727272727275,
+        height: 850.9090909090909,
+        allowFontScaling: true);
     return Scaffold(
       appBar: AppBar(
         title: Text(translator.translate('edit_market_profile')),
@@ -146,18 +152,24 @@ class _EditMarketProfilePageState extends State<EditMarketProfilePage> {
                     ),
                   ),
                   MyTextField(
+                    isEdit: true,
+                    initialValue: widget.appUser.companyName,
                     hintTextKey: 'company_name',
                     nofLines: 1,
                     validateFunction: nullValidation,
                     saveFunction: saveCompanyName,
                   ),
                   MyTextField(
+                    isEdit: true,
+                    initialValue: widget.appUser.userName,
                     hintTextKey: 'user_name',
                     nofLines: 1,
                     validateFunction: nullValidation,
                     saveFunction: saveuserName,
                   ),
                   MyTextField(
+                    isEdit: true,
+                    initialValue: widget.appUser.password,
                     hintTextKey: 'password',
                     nofLines: 1,
                     validateFunction: validatepasswordFunction,
@@ -165,6 +177,8 @@ class _EditMarketProfilePageState extends State<EditMarketProfilePage> {
                     textInputType: TextInputType.visiblePassword,
                   ),
                   MyTextField(
+                    isEdit: true,
+                    initialValue: widget.appUser.email,
                     hintTextKey: 'email',
                     nofLines: 1,
                     validateFunction: validateEmailFunction,
@@ -172,13 +186,20 @@ class _EditMarketProfilePageState extends State<EditMarketProfilePage> {
                     textInputType: TextInputType.emailAddress,
                   ),
                   ListTile(
-                    leading: Icon(
-                      Icons.location_on,
-                      color: AppColors.primaryColor,
-                    ),
-                    title: Text(translator.translate('company_location')),
-                  ),
+                      onTap: () {
+                        Get.to(MarkertLocationCollecter());
+                      },
+                      leading: Icon(
+                        Icons.location_on,
+                        color: AppColors.primaryColor,
+                      ),
+                      title: Obx(() => signInGetx.poitinAsString.value.isEmpty
+                          ? Text(translator.translate(
+                              '${widget.appUser.lat} - ${widget.appUser.lon}'))
+                          : Text(signInGetx.poitinAsString.value))),
                   MyTextField(
+                    isEdit: true,
+                    initialValue: widget.appUser.phoneNumber,
                     hintTextKey: 'tel_number',
                     nofLines: 1,
                     validateFunction: nullValidation,
@@ -187,6 +208,8 @@ class _EditMarketProfilePageState extends State<EditMarketProfilePage> {
                   ),
                   uploadFile(),
                   MyTextField(
+                    isEdit: true,
+                    initialValue: widget.appUser.comapnyActivity,
                     hintTextKey: 'company_activity',
                     nofLines: 1,
                     validateFunction: nullValidation,
@@ -200,7 +223,7 @@ class _EditMarketProfilePageState extends State<EditMarketProfilePage> {
                       Expanded(
                         child: PrimaryButton(
                           buttonPressFun: saveForm,
-                          textKey: 'save',
+                          textKey: 'edit',
                         ),
                       ),
                       SizedBox(

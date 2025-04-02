@@ -39,7 +39,10 @@ class _AppSettingsState extends State<AppSettingsTest> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    ScreenUtil.init(context,
+        width: 392.72727272727275,
+        height: 850.9090909090909,
+        allowFontScaling: true);
     return Scaffold(
       body: SettingsList(
         sections: [

@@ -6,7 +6,8 @@ import 'package:mashatel/values/colors.dart';
 
 class MyTextField extends StatelessWidget {
   final String hintTextKey;
-
+  final isEdit;
+  final initialValue;
   final Function saveFunction;
   final Function validateFunction;
   final int nofLines;
@@ -16,12 +17,19 @@ class MyTextField extends StatelessWidget {
       this.saveFunction,
       this.validateFunction,
       this.nofLines = 1,
+      this.isEdit = false,
+      this.initialValue,
       this.textInputType = TextInputType.text});
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.init(context,
+        width: 392.72727272727275,
+        height: 850.9090909090909,
+        allowFontScaling: true);
     return Container(
       child: TextFormField(
+        initialValue: isEdit ? initialValue : '',
         maxLines: nofLines,
         onFieldSubmitted: (value) {
           FocusScope.of(context).nextFocus();

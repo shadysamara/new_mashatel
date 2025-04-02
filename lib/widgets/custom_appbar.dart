@@ -22,27 +22,27 @@ class BaseAppbar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: AppColors.primaryColor,
       automaticallyImplyLeading: true,
       elevation: 0,
-      actions: [
-        signInGetx.usertype.value != userType.market
-            ? Container()
-            : IconButton(
-                icon: Icon(
-                  Icons.add_circle,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  Get.to(AddNewProduct());
-                }),
-        IconButton(
-            icon: Icon(
-              FontAwesomeIcons.signOutAlt,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              RegistrationClient.registrationIntance.signOut();
-            })
-      ],
-      title: Text(translator.translate(title)),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+              child: Container(
+                  child: Text(
+            translator.translate(title),
+            textAlign: TextAlign.center,
+          ))),
+          signInGetx.usertype.value != userType.market
+              ? Container()
+              : IconButton(
+                  icon: Icon(
+                    Icons.add_circle,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    Get.to(AddNewProduct());
+                  }),
+        ],
+      ),
     );
   }
 

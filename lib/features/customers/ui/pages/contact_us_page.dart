@@ -90,10 +90,13 @@ class _ContactUsPageState extends State<ContactUsPage> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    ScreenUtil.init(context,
+        width: 392.72727272727275,
+        height: 850.9090909090909,
+        allowFontScaling: true);
     return Scaffold(
       appBar: BaseAppbar('contact_us'),
-      drawer: AppSettings(appGet.appUser.value),
+      endDrawer: AppSettings(appGet.appUser.value),
       body: Container(
         margin: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
         child: Form(

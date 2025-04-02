@@ -4,10 +4,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:mashatel/error_screen.dart';
+import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/messanger/ui/pages/massenger.dart';
 import 'package:mashatel/features/sign_in/ui/pages/testpage.dart';
 import 'package:mashatel/loading_screen.dart';
 import 'package:mashatel/services/connectvity_service.dart';
+import 'package:mashatel/services/dynamic_links_service.dart';
 import 'package:mashatel/splach.dart';
 import 'package:mashatel/testScreen.dart';
 import 'package:mashatel/values/colors.dart';
@@ -46,6 +48,7 @@ class ReceivedNotification {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  AppGet appGet = Get.put(AppGet());
   notificationAppLaunchDetails =
       await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
 
@@ -153,7 +156,7 @@ class _MyAppState extends State<MyApp> {
       supportedLocales: translator.locals(),
       home: MaterialApp(
         theme: _myTheme,
-        title: 'Ecards',
+        title: translator.translate('app_name'),
         home: BrokerPage(),
         debugShowCheckedModeBanner: false,
       ),
@@ -166,8 +169,44 @@ class BrokerPage extends StatefulWidget {
   _BrokerPageState createState() => _BrokerPageState();
 }
 
-class _BrokerPageState extends State<BrokerPage> {
+class _BrokerPageState extends State<BrokerPage> with WidgetsBindingObserver {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+  final DynamicLinkService _dynamicLinkService = DynamicLinkService();
+  Timer _timerLink;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _timerLink = new Timer(
+      const Duration(milliseconds: 1000),
+      () {
+        _dynamicLinkService.retrieveDynamicLink(context);
+      },
+    );
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _timerLink = new Timer(
+        const Duration(milliseconds: 1000),
+        () {
+          _dynamicLinkService.retrieveDynamicLink(context);
+        },
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    if (_timerLink != null) {
+      _timerLink.cancel();
+    }
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context,
@@ -180,12 +219,28 @@ class _BrokerPageState extends State<BrokerPage> {
       builder: (context, snapshot) {
         // Check for errors
         if (snapshot.hasError) {
-          return SplashScreen();
+          return Scaffold(
+            body: Center(
+              child: Text('error'),
+            ),
+          );
         }
 
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
-          return SplashScreen();
+          return FutureBuilder<Uri>(
+              future: _dynamicLinkService.createDynamicLink(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return SplashScreen();
+                } else {
+                  return Scaffold(
+                    body: Center(
+                      child: SplashScreen(),
+                    ),
+                  );
+                }
+              });
         }
 
         // Otherwise, show something whilst waiting for initialization to complete

@@ -10,9 +10,13 @@ import 'package:mashatel/widgets/custom_appbar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ChatsPage extends StatelessWidget {
+  AppGet appGet = Get.find();
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    ScreenUtil.init(context,
+        width: 392.72727272727275,
+        height: 850.9090909090909,
+        allowFontScaling: true);
     return Scaffold(
         appBar: AppBar(
           title: Text('Chat App'),
@@ -27,8 +31,10 @@ class AllExistsChats extends StatelessWidget {
   AppGet appGet = Get.find();
   @override
   Widget build(BuildContext context) {
-    print(appGet.allChats[0]['otherUserMap']);
-    // TODO: implement build
+    ScreenUtil.init(context,
+        width: 392.72727272727275,
+        height: 850.9090909090909,
+        allowFontScaling: true);
     return Obx(() {
       return appGet.allChats.isNotEmpty
           ? ListView.builder(

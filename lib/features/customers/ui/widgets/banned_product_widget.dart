@@ -11,9 +11,13 @@ class BannedProduct extends StatelessWidget {
   BannedProduct({this.productModel});
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    ScreenUtil.init(context,
+        width: 392.72727272727275,
+        height: 850.9090909090909,
+        allowFontScaling: true);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
+      margin: EdgeInsets.symmetric(vertical: 5.h, horizontal: 10.w),
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: Radii.widgetsRadius,

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/customers/ui/pages/control_panel/about_app/insert_about_app.dart';
 import 'package:mashatel/features/customers/ui/pages/control_panel/add_advertisment.dart';
+import 'package:mashatel/features/customers/ui/pages/control_panel/admin_category_page.dart';
 import 'package:mashatel/features/customers/ui/pages/control_panel/all_ads.dart';
 import 'package:mashatel/features/customers/ui/pages/control_panel/new_category.dart';
 import 'package:mashatel/features/customers/ui/pages/control_panel/terms_and_conditions/insert_terms.dart';
@@ -17,9 +18,12 @@ class ControlPanelPage extends StatelessWidget {
   AppGet appGet = Get.put(AppGet());
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    ScreenUtil.init(context,
+        width: 392.72727272727275,
+        height: 850.9090909090909,
+        allowFontScaling: true);
     return Scaffold(
-      drawer: AppSettings(appGet.appUser.value),
+      endDrawer: AppSettings(appGet.appUser.value),
       appBar: BaseAppbar('control_panel'),
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 10.h),
@@ -28,9 +32,9 @@ class ControlPanelPage extends StatelessWidget {
             children: [
               ControlPnelWidget(
                 iconData: FontAwesomeIcons.store,
-                title: 'add_category',
+                title: 'category_control',
                 fun: () {
-                  Get.to(NewCategory());
+                  Get.to(AdminCategoryPage());
                 },
               ),
               ControlPnelWidget(
@@ -60,7 +64,7 @@ class ControlPanelPage extends StatelessWidget {
                 fun: () {
                   Get.to(ReportedProducts());
                 },
-              )
+              ),
             ],
           ),
         ),

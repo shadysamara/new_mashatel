@@ -101,12 +101,17 @@ class _CarouselWithIndicatorDemoState extends State<CarouselWithIndicatorDemo> {
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.init(context,
+        width: 392.72727272727275,
+        height: 850.9090909090909,
+        allowFontScaling: true);
     Size size = MediaQuery.of(context).size;
     return imageSliders.isNotEmpty
         ? Column(children: [
             CarouselSlider(
               items: imageSliders,
               options: CarouselOptions(
+                  autoPlay: true,
                   viewportFraction: 1.1,
                   enlargeCenterPage: true,
                   height: size.height / 4,

@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
+import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/sign_in/models/sp_user.dart';
 
 import 'package:mashatel/features/sign_in/models/userApp.dart';
@@ -71,13 +72,14 @@ class RegistrationClient {
   }
 
 /////////////////////////////////////////////////////////////////////////////
-  Future<AppUser> getMarketFromFirestore(String marketId) async {
+  Future<AppUser> getMarketFromFirestore(String? marketId) async {
     QuerySnapshot querySnapshot = await firestore
         .collection('users')
         .where('userId', isEqualTo: marketId)
         .get();
     QueryDocumentSnapshot queryDocumentSnapshot = querySnapshot.docs.single;
     AppUser appUser = AppUser.fromMarketJson(queryDocumentSnapshot.data());
+
     return appUser;
   }
 
@@ -125,8 +127,37 @@ class RegistrationClient {
 /////////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////////////////////
-  updateMarketProfile(String userId, AppUser appUser) {
-    firestore.collection('users').doc(userId).update(appUser.toMarketJson());
+  updateMarketProfile(String userId, AppUser appUser) async {
+    try {
+      signInGetx.pr.show();
+      Map<String, dynamic> map = appUser.toMarketJson();
+      File file = map['imageFile'];
+
+      String companyName = map['phoneNumber'];
+      String imagePath = appUser.marketLogo != null
+          ? await addMarketImage(file, companyName)
+          : appUser.imagePath;
+
+      map['imagePath'] = imagePath;
+      map['userId'] = appUser.userId;
+      map.remove('imageFile');
+      appUser.imagePath = imagePath;
+      appUser.userId = appUser.userId;
+
+      await firestore.collection('users').doc(userId).update(map);
+      signInGetx.pr.hide();
+      getMarketFromFirestore(userId);
+      CustomDialougs.utils.showDialoug(
+          messageKey: 'update_success',
+          titleKey: 'success',
+          function: () {
+            Get.back();
+            Get.back();
+          });
+    } on Exception catch (e) {
+      CustomDialougs.utils
+          .showDialoug(messageKey: 'update_failed', titleKey: 'alert');
+    }
   }
 
   Future<String> addMarketImage(File file, String marketName) async {

@@ -14,6 +14,10 @@ class PrimaryButton extends StatelessWidget {
       {this.buttonPressFun, this.textKey, this.color = AppColors.primaryColor});
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.init(context,
+        width: 392.72727272727275,
+        height: 850.9090909090909,
+        allowFontScaling: true);
     return Container(
       height: 55.h,
       width: double.infinity,

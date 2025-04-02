@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mashatel/features/customers/blocs/app_get.dart';
@@ -32,7 +33,10 @@ class _ReportedProductsState extends State<ReportedProducts> {
 //   }
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    ScreenUtil.init(context,
+        width: 392.72727272727275,
+        height: 850.9090909090909,
+        allowFontScaling: true);
     return Scaffold(
         appBar: AppBar(
           title: Text(translator.translate('report_appBar')),

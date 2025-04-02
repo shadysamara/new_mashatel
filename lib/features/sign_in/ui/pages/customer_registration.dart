@@ -112,7 +112,10 @@ class _customerRegistrationPageState extends State<CustomerRegistrationPage> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    ScreenUtil.init(context,
+        width: 392.72727272727275,
+        height: 850.9090909090909,
+        allowFontScaling: true);
     return Scaffold(
       appBar: AppBar(
         title: Text(translator.translate('customers_register')),

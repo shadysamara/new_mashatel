@@ -1,15 +1,23 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/instance_manager.dart';
+import 'package:mashatel/features/customers/blocs/app_get.dart';
+import 'package:mashatel/features/customers/repositories/mashatel_client.dart';
 import 'package:mashatel/features/sign_in/models/userApp.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mashatel/values/radii.dart';
 
 class MarketWidget extends StatelessWidget {
   AppUser appUser;
+  AppGet appGet = Get.find();
   MarketWidget({this.appUser});
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    ScreenUtil.init(context,
+        width: 392.72727272727275,
+        height: 850.9090909090909,
+        allowFontScaling: true);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
       decoration: BoxDecoration(
@@ -54,7 +62,19 @@ class MarketWidget extends StatelessWidget {
             ],
           ),
           Spacer(),
-          Icon(Icons.navigate_next)
+          FirebaseAuth.instance.currentUser == null
+              ? Container()
+              : appGet.appUser.value.isAdmin
+                  ? IconButton(
+                      icon: Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ),
+                      onPressed: () {
+                        MashatelClient.mashatelClient
+                            .removeMarket(appUser.userId, appUser.catId);
+                      })
+                  : Icon(Icons.navigate_next)
         ],
       ),
     );

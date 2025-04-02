@@ -18,57 +18,56 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  flutter_screenutil: ^2.3.1
-  localize_and_translate: ^3.0.2
-  string_validator: ^0.1.4
-  flutter_svg: ^0.18.0
-  cached_network_image: ^2.3.1
-  carousel_slider: ^2.2.1
-  google_fonts: ^1.1.0
-  settings_ui: ^0.4.0
-  image_picker: ^0.6.7+7
-  font_awesome_flutter: ^8.8.1
-  shared_preferences: ^0.5.10
-  time: "^1.3.0"
-  equatable: ^1.2.5
-  flutter_slidable: ^0.5.7
-  flare_flutter: ^2.0.6
-  auto_size_text: ^2.1.0
-  connectivity: ^0.4.9+2
-  get: ^3.11.1
-  firebase_core: "^0.5.1"
-  firebase_auth: "^0.18.0+1"
-  cloud_firestore: "^0.14.0+2"
-  firebase_storage: "^4.0.0"
-  geolocator: ^6.0.0+4
-  google_maps_flutter: ^0.5.33
-  progress_dialog: ^1.2.0
-  provider: ^4.3.2+2
-  after_layout: ^1.0.7+2
-  url_launcher: ^5.7.2
-  multi_image_picker: ^4.7.14
-  file_picker: ^2.0.6
-  dio: ^3.0.10
-  http: ^0.12.2
-  http_parser: ^3.1.4
-  shimmer: ^1.1.2
-  logger: ^0.9.4
-  flutter_staggered_grid_view: ^0.3.2
-  firebase_messaging: ^7.0.3
-  flutter_local_notifications: ^3.0.1+2
-  rxdart: ^0.24.1
+  flutter_screenutil:
+  localize_and_translate:
+  string_validator:
+  flutter_svg:
+  cached_network_image:
+  carousel_slider:
+  google_fonts:
+  settings_ui:
+  image_picker:
+  font_awesome_flutter:
+  shared_preferences:
+  time:
+  equatable:
+  flutter_slidable:
+  flare_flutter:
+  auto_size_text:
+  connectivity:
+  get:
+  firebase_core:
+  firebase_auth:
+  cloud_firestore:
+  firebase_storage:
+  geolocator: 
+  google_maps_flutter: 
+  provider: 
+  after_layout:
+  url_launcher:
+  multi_image_picker: 
+  file_picker: 
+  dio: 
+  http:
+  http_parser: 
+  shimmer:
+  logger: 
+  flutter_staggered_grid_view: 
+  firebase_messaging:
+  flutter_local_notifications:
+  rxdart:
 
 
 
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.3
+  cupertino_icons:
 
 dev_dependencies:
   flutter_test:

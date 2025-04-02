@@ -17,43 +17,52 @@ class MarketPage extends StatelessWidget {
   AppGet appGet = Get.put(AppGet());
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return Scaffold(
-      drawer: AppSettings(appGet.appUser.value),
-      appBar: BaseAppbar(appUser != null ? appUser.userName : ''),
-      // drawer: AppSettings(appGet.appUser.value),
-      body: Column(
-        children: [
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
-              child: Obx(() {
-                return GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.8,
-                      crossAxisSpacing: 5.w,
-                      mainAxisSpacing: 15.h),
-                  itemCount: appGet.products.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                        onTap: () {
-                          Get.to(
-                              ProductDetails(appGet.products[index], appUser));
-                        },
-                        child: Container(
-                          child: ProductWidget(appGet.products[index]),
-                        ));
-                  },
-                );
-              }),
+    ScreenUtil.init(context,
+        width: 392.72727272727275,
+        height: 850.9090909090909,
+        allowFontScaling: true);
+    return WillPopScope(
+      onWillPop: () {
+        appGet.products.value = [];
+        return Future.value(true);
+      },
+      child: Scaffold(
+        endDrawer: AppSettings(appGet.appUser.value),
+        appBar: BaseAppbar(appUser != null ? appUser.userName : ''),
+        // drawer: AppSettings(appGet.appUser.value),
+        body: Column(
+          children: [
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
+                child: Obx(() {
+                  return GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.8,
+                        crossAxisSpacing: 5.w,
+                        mainAxisSpacing: 15.h),
+                    itemCount: appGet.products.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                          onTap: () {
+                            Get.to(ProductDetails(
+                                appGet.products[index], appUser));
+                          },
+                          child: Container(
+                            child: ProductWidget(appGet.products[index]),
+                          ));
+                    },
+                  );
+                }),
+              ),
             ),
-          ),
-          AdvertismentWidget(
-              appGet
-                  .advertisments[Random().nextInt(appGet.advertisments.length)],
-              0),
-        ],
+            AdvertismentWidget(
+                appGet.advertisments[
+                    Random().nextInt(appGet.advertisments.length)],
+                0),
+          ],
+        ),
       ),
     );
   }

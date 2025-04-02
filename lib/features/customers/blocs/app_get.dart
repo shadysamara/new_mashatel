@@ -7,9 +7,11 @@ import 'package:mashatel/features/customers/modles/product_model.dart';
 import 'package:mashatel/features/customers/modles/terms.dart';
 import 'package:mashatel/features/customers/repositories/mashatel_client.dart';
 import 'package:mashatel/features/sign_in/models/userApp.dart';
+import 'package:mashatel/utils/custom_dialoug.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
 class AppGet {
+  bool isFromDynamic = false;
   var allCategories = <Category>[].obs;
   var markets = <AppUser>[].obs;
   var imagePath = ''.obs;
@@ -24,6 +26,19 @@ class AppGet {
   AboutAppModel aboutAppModel;
   TermsModel termsModel;
   var allChats = <Map<String, dynamic>>[].obs;
+  updateCategory(Category category) async {
+    await MashatelClient.mashatelClient.updateCategory(category);
+    imagePath.value = '';
+    getAllCategories();
+    localImageFilePath.value = '';
+    CustomDialougs.utils.showDialoug(
+        messageKey: 'success_edit',
+        titleKey: 'sucecess',
+        function: () {
+          Get.back();
+          Get.back();
+        });
+  }
 
   resetMarkets() {
     this.markets.value = [];
@@ -96,10 +111,11 @@ class AppGet {
   getAllMarkets(String catId) async {
     List<AppUser> markets =
         await MashatelClient.mashatelClient.getAllMarkets(catId);
+    print(markets);
     this.markets.value = markets;
   }
 
-  getMarketProducts(String marketId) async {
+  getMarketProducts(String? marketId) async {
     List<ProductModel> products =
         await MashatelClient.mashatelClient.getAllProducts(marketId);
 
@@ -112,6 +128,7 @@ class AppGet {
         await MashatelClient.mashatelClient.insertNewCategory(category);
     this.catId.value = catId;
     this.imagePath.value = '';
+    getAllCategories();
     return catId;
   }
 
@@ -130,5 +147,4 @@ class AppGet {
   //   String element = miniAdsUrls[_random.nextInt(miniAdsUrls.length)];
   //   this.minAd.value = element;
   // }
-
 }

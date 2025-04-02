@@ -16,7 +16,10 @@ class MarketsPage extends StatelessWidget {
   SignInGetx signInGetx = Get.put(SignInGetx());
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    ScreenUtil.init(context,
+        width: 392.72727272727275,
+        height: 850.9090909090909,
+        allowFontScaling: true);
     return WillPopScope(
       onWillPop: () {
         appGet.resetMarkets();
@@ -24,7 +27,7 @@ class MarketsPage extends StatelessWidget {
       },
       child: Scaffold(
         appBar: BaseAppbar('markets'),
-        // drawer: AppSettings(appGet.appUser.value),
+        endDrawer: AppSettings(appGet.appUser.value),
         body: Container(
           padding: EdgeInsets.symmetric(vertical: 15.h),
           child: Obx(() {
@@ -48,10 +51,12 @@ class MarketsPage extends StatelessWidget {
                               ),
                             ),
                           ),
-                          AdvertismentWidget(
-                              appGet.advertisments[Random()
-                                  .nextInt(appGet.advertisments.length)],
-                              10),
+                          appGet.advertisments.length > 0
+                              ? AdvertismentWidget(
+                                  appGet.advertisments[Random()
+                                      .nextInt(appGet.advertisments.length)],
+                                  10)
+                              : Container(),
                         ],
                       )
                     : Padding(
