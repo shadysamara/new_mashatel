@@ -9,15 +9,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mashatel/values/radii.dart';
 
 class MarketWidget extends StatelessWidget {
-  AppUser appUser;
+  AppUser? appUser;
   AppGet appGet = Get.find();
   MarketWidget({this.appUser});
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
       decoration: BoxDecoration(
@@ -44,7 +40,7 @@ class MarketWidget extends StatelessWidget {
                 borderRadius: Radii.widgetsRadius,
                 clipBehavior: Clip.antiAlias,
                 child: CachedNetworkImage(
-                  imageUrl: appUser.imagePath,
+                  imageUrl: appUser?.imagePath ?? '',
                   fit: BoxFit.cover,
                 )),
           ),
@@ -55,24 +51,25 @@ class MarketWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                appUser.userName,
+                appUser?.userName ?? '',
                 textAlign: TextAlign.start,
               ),
-              Text(appUser.companyName, textAlign: TextAlign.start)
+              Text(appUser?.companyName ?? '', textAlign: TextAlign.start)
             ],
           ),
           Spacer(),
           FirebaseAuth.instance.currentUser == null
               ? Container()
-              : appGet.appUser.value.isAdmin
+              : appGet.appUser.value.isAdmin == true
                   ? IconButton(
                       icon: Icon(
                         Icons.delete,
                         color: Colors.red,
                       ),
                       onPressed: () {
+                        if (appUser?.userId == null) return;
                         MashatelClient.mashatelClient
-                            .removeMarket(appUser.userId, appUser.catId);
+                            .removeMarket(appUser!.userId!);
                       })
                   : Icon(Icons.navigate_next)
         ],

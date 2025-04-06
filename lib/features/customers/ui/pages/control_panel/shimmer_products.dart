@@ -12,10 +12,6 @@ class _LoadingListPageState extends State<LoadingListPage> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
@@ -24,8 +20,8 @@ class _LoadingListPageState extends State<LoadingListPage> {
         children: <Widget>[
           Expanded(
             child: Shimmer.fromColors(
-              baseColor: Colors.grey[300],
-              highlightColor: Colors.grey[100],
+              baseColor: Colors.grey.withOpacity(0.3),
+              highlightColor: Colors.grey.withOpacity(0.1),
               enabled: _enabled,
               child: ListView.builder(
                 itemBuilder: (_, __) => Padding(

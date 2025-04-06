@@ -2,16 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 
-import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/customers/modles/product_model.dart';
 import 'package:mashatel/features/customers/repositories/mashatel_client.dart';
 import 'package:mashatel/features/sign_in/providers/signInGetx.dart';
 import 'package:mashatel/features/sign_in/ui/widgets/upload_multi_images.dart';
-import 'package:mashatel/features/sign_in/ui/widgets/upload_file.dart';
 import 'package:mashatel/services/connectvity_service.dart';
 import 'package:mashatel/utils/custom_dialoug.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,17 +24,17 @@ class AddNewProduct extends StatefulWidget {
 class _MarketRegistrationPageState extends State<AddNewProduct> {
   GlobalKey<FormState> advFormKey = GlobalKey();
 
-  String nameAr;
+  String? nameAr;
 
-  String nameEn;
+  String? nameEn;
 
-  String descAr;
+  String? descAr;
 
-  String descEn;
+  String? descEn;
 
-  double price;
+  double? price;
 
-  File adImage;
+  File? adImage;
 
   bool isInnerMessages = false;
   bool isWithoutPhoneNumber = false;
@@ -69,35 +66,35 @@ class _MarketRegistrationPageState extends State<AddNewProduct> {
     this.adImage = value;
   }
 
-  setIsInnerMessages(bool value) {
+  setIsInnerMessages(bool? value) {
     setState(() {
-      this.isInnerMessages = value;
+      this.isInnerMessages = value ?? true;
     });
   }
 
-  setIsWithoutPhoneNumber(bool value) {
+  setIsWithoutPhoneNumber(bool? value) {
     setState(() {
-      this.isWithoutPhoneNumber = value;
+      this.isWithoutPhoneNumber = value ?? true;
     });
   }
 
   nullValidation(String value) {
     if (value.isEmpty) {
-      return translator.translate('null_error');
+      return 'null_error'.tr;
     }
   }
 
   numberValidation(String value) {
     print(value);
     if (value.isEmpty) {
-      return translator.translate('null_error');
+      return 'null_error'.tr;
     }
   }
 
   saveForm() async {
-    if (advFormKey.currentState.validate()) {
+    if (advFormKey.currentState?.validate() == true) {
       if (appGet.images.isNotEmpty) {
-        advFormKey.currentState.save();
+        advFormKey.currentState?.save();
         ProductModel advertisment = ProductModel(
             descAr: this.descAr,
             descEn: this.descEn,
@@ -112,13 +109,13 @@ class _MarketRegistrationPageState extends State<AddNewProduct> {
         if (ConnectivityService.connectivityStatus !=
             ConnectivityStatus.Offline) {
           signInGetx.pr.show();
-          String adId = await MashatelClient.mashatelClient
+          String? adId = await MashatelClient.mashatelClient
               .addNewProductWithManyImages(advertisment, appGet.appUser.value);
           appGet.images.value = [];
-          advFormKey.currentState.reset();
+          advFormKey.currentState?.reset();
           signInGetx.pr.hide();
 
-          if (!adId.isNull) {
+          if (!(adId == null)) {
             CustomDialougs.utils.showSackbar(
                 messageKey: 'success_product_added', titleKey: 'success');
 
@@ -143,13 +140,9 @@ class _MarketRegistrationPageState extends State<AddNewProduct> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     return Scaffold(
       appBar: AppBar(
-        title: Text(translator.translate('new_product')),
+        title: Text('new_product'.tr),
       ),
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
@@ -190,19 +183,19 @@ class _MarketRegistrationPageState extends State<AddNewProduct> {
                     textInputType: TextInputType.number,
                   ),
                   uploadMultibleFile(),
-                  Text(translator.translate('ad_settings')),
+                  Text('ad_settings'.tr),
                   CheckboxListTile(
-                      title: Text(translator.translate('isInnerMessages')),
+                      title: Text('isInnerMessages'.tr),
                       activeColor: AppColors.primaryColor,
                       value: isInnerMessages,
                       onChanged: (value) => setIsInnerMessages(value)),
                   CheckboxListTile(
-                      title: Text(translator.translate('isWithoutPhoneNumber')),
+                      title: Text('isWithoutPhoneNumber'.tr),
                       activeColor: AppColors.primaryColor,
                       value: isWithoutPhoneNumber,
                       onChanged: (value) => setIsWithoutPhoneNumber(value)),
                   PrimaryButton(
-                    buttonPressFun: saveForm,
+                    onPressed: saveForm,
                     textKey: 'add',
                   )
                 ],

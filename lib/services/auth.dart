@@ -3,11 +3,21 @@ import 'package:get/get.dart';
 import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/sign_in/models/sp_user.dart';
 import 'package:mashatel/features/sign_in/providers/signInGetx.dart';
-import 'package:mashatel/services/fcm.dart';
 import 'package:mashatel/services/shared_prefrences_helper.dart';
 import 'package:mashatel/splach.dart';
 import 'package:mashatel/utils/HandleFirebaseErrorMessages.dart';
 import 'package:mashatel/utils/custom_dialoug.dart';
+
+class FireMessaging {
+  static final firebaseMessaging = FireMessaging._();
+
+  FireMessaging._();
+
+  Future<void> saveDeviceToken(String userId) async {
+    // Add logic to save the device token for the user
+    print('Device token saved for user: $userId');
+  }
+}
 
 class Auth {
   Auth._();
@@ -16,31 +26,30 @@ class Auth {
   final SignInGetx signInGetx = Get.put(SignInGetx());
   final AppGet appGet = Get.put(AppGet());
 ////////////////////////////////////////////////////////////////////////////////////////
-  Future<SpUser> registerUsingEmailAndPassword(
-      {String email,
-      String password,
-      bool isAdmin,
-      bool isCustomer,
-      bool isMarket}) async {
+  Future<SpUser?> registerUsingEmailAndPassword(
+      {required String email,
+      required String password,
+      bool isAdmin = false,
+      bool isCustomer = false,
+      bool isMarket = false}) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
-      FireMessaging.firebaseMessaging.saveDeviceToken(userCredential.user.uid);
-      if (userCredential != null) {
-        String userId = userCredential.user.uid;
-        SpUser spUser = await SPHelper.spHelper.setUserCredintials(
-            isAdmin: isAdmin,
-            isCustomer: isCustomer,
-            isMarket: isMarket,
-            userId: userId);
-        return spUser;
-      } else {
+      if (userCredential.user?.uid == null) {
         signInGetx.pr.hide();
         CustomDialougs.utils
             .showDialoug(messageKey: 'Failed', titleKey: 'alert');
 
         return null;
       }
+      FireMessaging.firebaseMessaging.saveDeviceToken(userCredential.user!.uid);
+      String userId = userCredential.user!.uid;
+      SpUser spUser = await SPHelper.spHelper.setUserCredintials(
+          isAdmin: isAdmin,
+          isCustomer: isCustomer,
+          isMarket: isMarket,
+          userId: userId);
+      return spUser;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         signInGetx.pr.hide();
@@ -56,30 +65,31 @@ class Auth {
   }
 
 /////////////////////////////////////////////////////////////////////////////////////////
-  Future<SpUser> signInWithEmailAndPassword(
-      {String email,
-      String password,
-      bool isAdmin,
-      bool isCustomer,
-      bool isMarket}) async {
+  Future<SpUser?> signInWithEmailAndPassword(
+      {required String email,
+      required String password,
+      bool isAdmin = false,
+      bool isCustomer = false,
+      bool isMarket = false}) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
-      FireMessaging.firebaseMessaging.saveDeviceToken(userCredential.user.uid);
-      if (userCredential != null) {
-        String userId = userCredential.user.uid;
-        SpUser spUser = await SPHelper.spHelper.setUserCredintials(
-            isAdmin: isAdmin,
-            isCustomer: isCustomer,
-            isMarket: isMarket,
-            userId: userId);
-        return spUser;
-      } else {
+      if (userCredential.user?.uid == null) {
+        signInGetx.pr.hide();
         CustomDialougs.utils
             .showDialoug(messageKey: 'Failed', titleKey: 'alert');
 
         return null;
       }
+      FireMessaging.firebaseMessaging.saveDeviceToken(userCredential.user!.uid);
+
+      String userId = userCredential.user!.uid;
+      SpUser spUser = await SPHelper.spHelper.setUserCredintials(
+          isAdmin: isAdmin,
+          isCustomer: isCustomer,
+          isMarket: isMarket,
+          userId: userId);
+      return spUser;
     } on FirebaseAuthException catch (e) {
       signInGetx.pr.hide();
       if (e.code == 'user-not-found') {

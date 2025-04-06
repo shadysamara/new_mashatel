@@ -3,7 +3,7 @@
 // import 'package:flutter/material.dart';
 // import 'package:get/get.dart';
 // import 'package:image_picker/image_picker.dart';
-// import 'package:localize_and_translate/localize_and_translate.dart';
+//
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 // import 'package:mashatel/features/customers/blocs/app_get.dart';
 // import 'package:mashatel/features/customers/modles/product.dart';
@@ -62,7 +62,7 @@
 
 //   nullValidation(String value) {
 //     if (value.isEmpty) {
-//       return translator.translate('null_error');
+//       return 'null_error');
 //     }
 //   }
 

@@ -16,7 +16,7 @@ class DynamicLinkService {
     return url;
   }
 
-  Future<Uri> createDynamicLink({String url}) async {
+  Future<Uri> createDynamicLink({String? url}) async {
     final DynamicLinkParameters parameters = DynamicLinkParameters(
       uriPrefix: 'https://mashatel.page.link',
       link: Uri.parse('https://mashatel.page.link.com/?id=$url'),
@@ -24,47 +24,53 @@ class DynamicLinkService {
         packageName: 'com.accsit.mashatel',
         minimumVersion: 1,
       ),
-      iosParameters: IosParameters(
+      iosParameters: IOSParameters(
         bundleId: 'com.accsit.mashatel',
         minimumVersion: '1',
         appStoreId: '1541543746',
       ),
     );
-    var dynamicUrl = await parameters.buildUrl();
+    final dynamicLink =
+        await FirebaseDynamicLinks.instance.buildLink(parameters);
 
-    return dynamicUrl;
+    return dynamicLink;
   }
 
   Future<void> retrieveDynamicLink(BuildContext context) async {
     try {
-      final PendingDynamicLinkData data =
+      final PendingDynamicLinkData? data =
           await FirebaseDynamicLinks.instance.getInitialLink();
-      final Uri deepLink = data?.link;
+      final Uri deepLink = data!.link;
 
-      if (deepLink != null) {
-        if (deepLink.queryParameters.containsKey('id')) {
-          String id = deepLink.queryParameters['id'];
-          ProductModel productModel =
-              await MashatelClient.mashatelClient.getProductById(id);
-          AppUser appUser = await MashatelClient.mashatelClient
-              .getMarketFromFirebase(productModel.marketId);
+      if (deepLink.queryParameters.containsKey('id')) {
+        String? id = deepLink.queryParameters['id'];
+        if (id == null) return;
+        ProductModel? productModel =
+            await MashatelClient.mashatelClient.getProductById(id);
+
+        if (productModel != null) {
           appGet.isFromDynamic = true;
+          AppUser appUser = await MashatelClient.mashatelClient
+              .getMarketFromFirebase(productModel.marketId!);
           Get.to(ProductDetails(productModel, appUser, true));
         }
       }
 
-      FirebaseDynamicLinks.instance.onLink(
-          onSuccess: (PendingDynamicLinkData dynamicLink) async {
+      FirebaseDynamicLinks.instance.onLink
+          .listen((PendingDynamicLinkData? dynamicLink) async {
         if (dynamicLink != null) {
           if (dynamicLink.link.queryParameters.containsKey('id')) {
-            String id = dynamicLink.link.queryParameters['id'];
+            String id = dynamicLink.link.queryParameters['id']!;
 
-            ProductModel productModel =
+            ProductModel? productModel =
                 await MashatelClient.mashatelClient.getProductById(id);
-            AppUser appUser = await MashatelClient.mashatelClient
-                .getMarketFromFirebase(productModel.marketId);
-            appGet.isFromDynamic = true;
-            Get.to(ProductDetails(productModel, appUser, true));
+
+            if (productModel != null) {
+              AppUser appUser = await MashatelClient.mashatelClient
+                  .getMarketFromFirebase(productModel.marketId!);
+              appGet.isFromDynamic = true;
+              Get.to(ProductDetails(productModel, appUser, true));
+            }
           }
         }
       });

@@ -1,14 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/customers/ui/pages/markets_page.dart';
-import 'package:mashatel/features/customers/ui/pages/control_panel/new_category.dart';
 import 'package:mashatel/features/customers/ui/widgets/main_category_widget.dart';
 import 'package:mashatel/features/sign_in/providers/signInGetx.dart';
-import 'package:mashatel/features/sign_in/repositories/registration_client.dart';
 import 'package:mashatel/widgets/custom_appbar.dart';
 import 'package:mashatel/widgets/custom_drawer.dart';
 import 'package:mashatel/widgets/slider.dart';
@@ -24,12 +23,6 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
-    Size size = MediaQuery.of(context).size;
-    // TODO: implement build
     return Scaffold(
       appBar: BaseAppbar('categories'),
       endDrawer: AppSettings(appGet.appUser.value),
@@ -37,7 +30,7 @@ class _MainPageState extends State<MainPage> {
         child: Column(
           children: [
             Container(
-                child: CarouselWithIndicatorDemo(
+                child: CarouselWithIndicator(
               isAds: true,
               ads: appGet.advertisments,
             )),
@@ -53,9 +46,15 @@ class _MainPageState extends State<MainPage> {
                               child: Obx(() {
                                 return GestureDetector(
                                   onTap: () {
-                                    appGet.getAllMarkets(
-                                        appGet.allCategories[index].catId);
-                                    Get.to(MarketsPage());
+                                    log(appGet.allCategories[index]
+                                        .toJson()
+                                        .toString());
+                                    if (appGet.allCategories[index].catId !=
+                                        null) {
+                                      appGet.getAllMarkets(
+                                          appGet.allCategories[index].catId!);
+                                      Get.to(MarketsPage());
+                                    }
                                   },
                                   child: CategoryWidget(
                                     category: appGet.allCategories[index],
@@ -66,7 +65,7 @@ class _MainPageState extends State<MainPage> {
                           },
                         )
                       : Center(
-                          child: Text(translator.translate('no_data')),
+                          child: Text('no_data'.tr),
                         );
                 }),
               ),

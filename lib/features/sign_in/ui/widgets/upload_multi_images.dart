@@ -12,7 +12,7 @@ import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/sign_in/providers/signInGetx.dart';
 import 'package:mashatel/values/colors.dart';
 import 'package:mashatel/values/radii.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:multi_image_picker_plus/multi_image_picker_plus.dart';
 
 class uploadMultibleFile extends StatefulWidget {
   @override
@@ -20,27 +20,31 @@ class uploadMultibleFile extends StatefulWidget {
 }
 
 class _uploadFileState extends State<uploadMultibleFile> {
-  File marketLogo;
+  File? marketLogo;
   AppGet appGet = Get.put(AppGet());
-  List<Asset> images = List<Asset>();
+  List<Asset> images = [];
 
 //////////////////////////////////////////////////////////////////////////////////////////
   Future<void> loadAssets() async {
-    List<Asset> resultList = List<Asset>();
+    List<Asset> resultList = [];
     String error = 'No Error Dectected';
 
     try {
       resultList = await MultiImagePicker.pickImages(
-        maxImages: 9,
-        enableCamera: true,
+        iosOptions: IOSOptions(
+          settings: CupertinoSettings(
+              selection: SelectionSetting(max: 9), previewEnabled: true),
+          doneButton: UIBarButtonItem(title: 'Confirm'),
+          cancelButton: UIBarButtonItem(title: 'Cancel'),
+          albumButtonColor: Theme.of(context).colorScheme.primary,
+        ),
         selectedAssets: images,
-        cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
-        materialOptions: MaterialOptions(
-          actionBarColor: "#abcdef",
+        androidOptions: AndroidOptions(
+          actionBarColor: Color(0xffabcdef),
           actionBarTitle: "Example App",
           allViewTitle: "All Photos",
-          useDetailsView: false,
-          selectCircleStrokeColor: "#000000",
+          selectCircleStrokeColor: Color(0xff000000),
+          selectionLimitReachedText: "Selection limit reached",
         ),
       );
       appGet.setImagesAssets(resultList);
@@ -59,10 +63,6 @@ class _uploadFileState extends State<uploadMultibleFile> {
 //////////////////////////////////////////////////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     return Container(
         width: double.infinity,
         height: 60.h,
@@ -86,12 +86,11 @@ class _uploadFileState extends State<uploadMultibleFile> {
                         return Container(
                           margin: EdgeInsets.symmetric(horizontal: 2.w),
                           child: Chip(
-                            label: Text(appGet.images[index].name,
+                            label: Text(appGet.images[index].name ?? '',
                                 style: TextStyle(
                                   color: Colors.black45,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: ScreenUtil()
-                                      .setSp(15, allowFontScalingSelf: true),
+                                  fontSize: ScreenUtil().setSp(15.sp),
                                 )),
                             deleteIcon: Opacity(
                               opacity: 0.5,
@@ -111,12 +110,15 @@ class _uploadFileState extends State<uploadMultibleFile> {
             ),
             Container(
               height: 55.h,
-              child: RaisedButton(
+              child: ElevatedButton(
                   child: Icon(
                     FontAwesomeIcons.upload,
                     color: Colors.white,
                   ),
-                  shape: RoundedRectangleBorder(borderRadius: Radii.k8pxRadius),
+                  style: ElevatedButton.styleFrom(
+                    shape:
+                        RoundedRectangleBorder(borderRadius: Radii.k8pxRadius),
+                  ),
                   onPressed: () => loadAssets()),
             )
           ],

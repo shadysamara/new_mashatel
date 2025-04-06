@@ -1,6 +1,6 @@
 class TermsModel {
-  String nameAr;
-  String nameEn;
+  String? nameAr;
+  String? nameEn;
   TermsModel({this.nameAr, this.nameEn});
   TermsModel.fromMap(Map map) {
     print('hi');

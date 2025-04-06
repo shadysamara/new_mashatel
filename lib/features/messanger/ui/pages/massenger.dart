@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
+
 import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/customers/repositories/mashatel_client.dart';
 import 'package:mashatel/features/messanger/models/message_model.dart';
@@ -13,14 +12,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MassengerPage extends StatelessWidget {
   String chatId;
-  String otherId;
+  String? otherId;
   AppGet appGet = Get.find();
 
-  MassengerPage(this.otherId, {this.chatId});
+  MassengerPage(this.otherId, {required this.chatId});
   TextEditingController textEditingController = TextEditingController();
   ScrollController _controller = ScrollController();
   ///////////////////////////////////////////////////////////////////
-  Widget buildMessage({Message messageData, String myId, context}) {
+  Widget buildMessage({required Message messageData, String? myId, context}) {
     if (messageData.senderId == myId) {
       return myMessageView(messageData, context);
     } else {
@@ -37,7 +36,7 @@ class MassengerPage extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Text(messageData.hour),
+            child: Text(messageData.hour ?? ''),
           ),
           Padding(
               padding: const EdgeInsetsDirectional.only(end: 12.0),
@@ -58,7 +57,7 @@ class MassengerPage extends StatelessWidget {
               child: remoteMessageView(messageData, context)),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Text(messageData.hour),
+            child: Text(messageData.hour ?? ''),
           ),
         ],
       ),
@@ -68,7 +67,7 @@ class MassengerPage extends StatelessWidget {
 ////////////////////////////////////////////////////////////////
   Widget _myMessageContentWidget(Message messageData, context) {
     return Stack(
-      overflow: Overflow.visible,
+      clipBehavior: Clip.none,
       alignment: Directionality.of(context) == TextDirection.ltr
           ? Alignment.bottomRight
           : Alignment.bottomLeft,
@@ -101,7 +100,7 @@ class MassengerPage extends StatelessWidget {
                 padding:
                     const EdgeInsets.only(top: 6, bottom: 6, right: 4, left: 4),
                 child: Text(
-                  messageData.text,
+                  messageData.text ?? '',
                   textAlign: TextAlign.start,
                   textDirection: TextDirection.ltr,
                   style: TextStyle(color: Colors.white, fontSize: 16),
@@ -132,7 +131,7 @@ class MassengerPage extends StatelessWidget {
             padding:
                 const EdgeInsets.only(top: 6, bottom: 6, right: 4, left: 4),
             child: Text(
-              messageData.text,
+              messageData.text ?? '',
               textAlign: TextAlign.start,
               textDirection: TextDirection.ltr,
               style: TextStyle(color: Colors.white, fontSize: 16),
@@ -162,7 +161,7 @@ class MassengerPage extends StatelessWidget {
 ////////////////////////////////////////////////////////////////////////////////
   Widget _remoteMessageContentWidget(Message messageData, context) {
     return Stack(
-      overflow: Overflow.visible,
+      clipBehavior: Clip.none,
       alignment: Directionality.of(context) == TextDirection.ltr
           ? Alignment.bottomLeft
           : Alignment.bottomRight,
@@ -193,13 +192,13 @@ class MassengerPage extends StatelessWidget {
               padding: const EdgeInsets.all(4.0),
               child: Stack(
                   alignment: Alignment.center,
-                  overflow: Overflow.clip,
+                  clipBehavior: Clip.hardEdge,
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(
                           top: 6, bottom: 6, right: 4, left: 4),
                       child: Text(
-                        messageData.text ?? Text('deletedMessage'),
+                        messageData.text ?? 'deletedMessage',
                         textAlign: TextAlign.start,
                         textDirection: TextDirection.ltr,
                         style: TextStyle(
@@ -218,10 +217,6 @@ class MassengerPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: BaseAppbar('messenger'),
@@ -236,22 +231,18 @@ class MassengerPage extends StatelessWidget {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(
-                      child: FlareActor(
-                        "assets/animations/loading.flr",
-                        sizeFromArtboard: true,
-                        alignment: Alignment.center,
-                        fit: BoxFit.cover,
-                        animation: "loading",
-                      ),
+                      child: CircularProgressIndicator(),
                     );
                   } else if (snapshot.hasData && snapshot.data == null) {
                     return Center(
                       child: Text('No Messages'),
                     );
                   } else {
-                    List<Message> messages = snapshot.data.docs
-                        .map((e) => Message.frmMap(e.data()))
-                        .toList();
+                    List<Message> messages = snapshot.data?.docs
+                            .map((e) => Message.frmMap(
+                                e.data() as Map<String, dynamic>))
+                            .toList() ??
+                        [];
 
                     return ListView.builder(
                       controller: _controller,
@@ -287,7 +278,7 @@ class MassengerPage extends StatelessWidget {
                     controller: textEditingController,
                     decoration: InputDecoration(
                         border: OutlineInputBorder(borderSide: BorderSide.none),
-                        hintText: translator.translate('messenger_label')),
+                        hintText: 'messenger_label'.tr),
                   )),
                   GestureDetector(
                     onTap: () {

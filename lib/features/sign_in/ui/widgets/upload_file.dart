@@ -16,13 +16,19 @@ class uploadFile extends StatefulWidget {
 }
 
 class _uploadFileState extends State<uploadFile> {
-  File marketLogo;
+  File? marketLogo;
   SignInGetx signInGetx = Get.find();
   saveLogo() async {
-    PickedFile file = await ImagePicker().getImage(source: ImageSource.gallery);
+    XFile? file = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (file == null) {
+      return;
+    }
+    if (marketLogo == null) {
+      return;
+    }
     this.marketLogo = File(file.path);
-    String fileName = marketLogo.path.substring(
-        marketLogo.path.lastIndexOf('/') + 1, marketLogo.path.length);
+    String fileName = marketLogo!.path.substring(
+        marketLogo!.path.lastIndexOf('/') + 1, marketLogo!.path.length);
     fileName = fileName.length > 15
         ? fileName.substring(0, 15) +
             '.....' +
@@ -41,7 +47,9 @@ class _uploadFileState extends State<uploadFile> {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.all(new Radius.circular(50.0.h)),
             border: Border.all(color: AppColors.primaryColor)),
-        padding: EdgeInsets.only(left: 10.w, right: 2.w),
+        padding: EdgeInsets.only(
+            right: Get.locale == Locale("ar") ? 10.w : 0.w,
+            left: Get.locale == Locale("ar") ? 0.w : 10.w),
         margin: EdgeInsets.only(bottom: 10.w),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -52,18 +60,22 @@ class _uploadFileState extends State<uploadFile> {
                 style: TextStyle(
                   color: Colors.black45,
                   fontWeight: FontWeight.bold,
-                  fontSize: ScreenUtil().setSp(15, allowFontScalingSelf: true),
+                  fontSize: 15.sp,
                 ),
               ),
             ),
             Container(
-              height: 55.h,
-              child: RaisedButton(
+              height: 60.h,
+              width: 90.w,
+              child: ElevatedButton(
                   child: Icon(
                     FontAwesomeIcons.upload,
                     color: Colors.white,
                   ),
-                  shape: RoundedRectangleBorder(borderRadius: Radii.k8pxRadius),
+                  style: ElevatedButton.styleFrom(
+                    shape:
+                        RoundedRectangleBorder(borderRadius: Radii.k8pxRadius),
+                  ),
                   onPressed: () => saveLogo()),
             )
           ],

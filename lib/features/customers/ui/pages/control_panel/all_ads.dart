@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
+
 import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/customers/repositories/mashatel_client.dart';
 import 'package:mashatel/features/customers/ui/pages/control_panel/add_advertisment.dart';
@@ -12,10 +12,6 @@ class AllAds extends StatelessWidget {
   AppGet appGet = Get.find();
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     return Scaffold(
         appBar: AppBar(
           actions: [
@@ -25,7 +21,7 @@ class AllAds extends StatelessWidget {
                   Get.to(AddNewPage());
                 })
           ],
-          title: Text(translator.translate('all_ads')),
+          title: Text('all_ads'.tr),
         ),
         body: Obx(() {
           return Container(
@@ -35,8 +31,11 @@ class AllAds extends StatelessWidget {
                 return Dismissible(
                   key: UniqueKey(),
                   onDismissed: (direction) {
+                    if (appGet.advertisments[index].id == null) {
+                      return;
+                    }
                     MashatelClient.mashatelClient
-                        .deleteAdvertisment(appGet.advertisments[index].id);
+                        .deleteAdvertisment(appGet.advertisments[index].id!);
                   },
                   child: Container(
                     margin:
@@ -65,7 +64,8 @@ class AllAds extends StatelessWidget {
                           borderRadius: Radii.widgetsRadius,
                           clipBehavior: Clip.antiAlias,
                           child: CachedNetworkImage(
-                            imageUrl: appGet.advertisments[index].imageUrl,
+                            imageUrl:
+                                appGet.advertisments[index].imageUrl ?? '',
                             fit: BoxFit.cover,
                           )),
                     ),

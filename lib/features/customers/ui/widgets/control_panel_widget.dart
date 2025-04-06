@@ -1,27 +1,25 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
+
 import 'package:mashatel/features/customers/modles/category.dart';
 import 'package:mashatel/values/colors.dart';
 import 'package:mashatel/values/radii.dart';
 import 'package:mashatel/values/styles.dart';
 
 class ControlPnelWidget extends StatelessWidget {
-  IconData iconData;
-  String title;
-  Function fun;
+  IconData? iconData;
+  String? title;
+  Function? fun;
   ControlPnelWidget({this.iconData, this.fun, this.title});
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     return GestureDetector(
       onTap: () {
-        fun();
+        if (fun != null) {
+          fun!();
+        }
       },
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
@@ -56,7 +54,7 @@ class ControlPnelWidget extends StatelessWidget {
                   padding:
                       EdgeInsets.only(right: 10.w, top: 10.h, bottom: 10.h),
                   child: Text(
-                    translator.translate(title),
+                    title ?? '',
                     style: Styles.headerStyle.copyWith(fontSize: 20),
                   ),
                 ),

@@ -1,13 +1,12 @@
 import 'dart:io';
 
-import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
+
 import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/customers/ui/pages/market_page.dart';
 import 'package:mashatel/features/sign_in/models/market_model.dart';
@@ -15,7 +14,6 @@ import 'package:mashatel/features/sign_in/models/userApp.dart';
 import 'package:mashatel/features/sign_in/providers/signInGetx.dart';
 import 'package:mashatel/features/sign_in/repositories/registration_client.dart';
 import 'package:mashatel/features/sign_in/ui/pages/market_location_page.dart';
-import 'package:mashatel/features/sign_in/ui/pages/testpage.dart';
 import 'package:mashatel/features/sign_in/ui/widgets/custom_dropdown.dart';
 import 'package:mashatel/features/sign_in/ui/widgets/upload_file.dart';
 import 'package:mashatel/services/auth.dart';
@@ -36,19 +34,19 @@ class MarketRegistrationPage extends StatefulWidget {
 class _MarketRegistrationPageState extends State<MarketRegistrationPage> {
   GlobalKey<FormState> marketRegFormKey = GlobalKey();
 
-  String companyName;
+  String? companyName;
 
-  String userName;
+  String? userName;
 
-  String password;
+  String? password;
 
-  String email;
+  String? email;
 
-  String phoneNumber;
+  String? phoneNumber;
 
-  File marketLogo;
+  File? marketLogo;
 
-  String comapnyActivity;
+  String? comapnyActivity;
 
   final SignInGetx signInGetx = Get.put(SignInGetx());
   final AppGet appGet = Get.put(AppGet());
@@ -80,32 +78,32 @@ class _MarketRegistrationPageState extends State<MarketRegistrationPage> {
 
   validateEmailFunction(String value) {
     if (value.isEmpty) {
-      return translator.translate('null_error');
+      return 'null_error'.tr;
     } else if (!isEmail(value)) {
-      return translator.translate('email_error');
+      return 'email_error'.tr;
     }
   }
 
   validatepasswordFunction(String value) {
     if (value.isEmpty) {
-      return translator.translate('null_error');
+      return 'null_error'.tr;
     } else if (value.length < 8) {
-      return translator.translate('password_error');
+      return 'password_error'.tr;
     }
   }
 
   nullValidation(String value) {
     if (value.isEmpty) {
-      return translator.translate('null_error');
+      return 'null_error'.tr;
     }
   }
 
   saveForm() async {
-    if (marketRegFormKey.currentState.validate()) {
+    if (marketRegFormKey.currentState?.validate() == true) {
       if (signInGetx.file != null) {
         if (signInGetx.positionIsMarkes.value == true) {
           if (signInGetx.category != null) {
-            marketRegFormKey.currentState.save();
+            marketRegFormKey.currentState?.save();
             AppUser market = AppUser(
                 comapnyActivity: this.comapnyActivity,
                 companyName: this.companyName,
@@ -115,24 +113,23 @@ class _MarketRegistrationPageState extends State<MarketRegistrationPage> {
                 phoneNumber: this.phoneNumber,
                 lat: signInGetx.position.value.latitude,
                 lon: signInGetx.position.value.longitude,
-                catId: signInGetx.category.catId,
                 userName: this.userName);
             if (ConnectivityService.connectivityStatus !=
                 ConnectivityStatus.Offline) {
               signInGetx.pr.show();
-              AppUser appUser = await RegistrationClient.registrationIntance
+              AppUser? appUser = await RegistrationClient.registrationIntance
                   .registerAsMarket(market);
-              if (!appUser.isNull) {
+              if (appUser != null) {
                 signInGetx.pr.hide();
                 CustomDialougs.utils.showSackbar(
                     messageKey: 'market_snackbar_message',
                     titleKey: 'market_snackbar_title');
-                signInGetx.setUserType(userType.market);
-                appGet.setMarketId(appUser.userId);
+                signInGetx.setUserType(UserType.market);
+                appGet.setMarketId(appUser.userId!);
                 appGet.setAppUser(appUser);
                 await Future.delayed(Duration(seconds: 3));
 
-                Get.offAll(MarketPage(appUser));
+                Get.offAll(MarketPage(appUser: appUser));
               }
             } else {
               CustomDialougs.utils
@@ -161,7 +158,7 @@ class _MarketRegistrationPageState extends State<MarketRegistrationPage> {
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: Text(translator.translate('market_register')),
+        title: Text('market_register'.tr),
       ),
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
@@ -182,37 +179,37 @@ class _MarketRegistrationPageState extends State<MarketRegistrationPage> {
                           width: 10.w,
                         ),
                         Text(
-                          translator.translate('market_register'),
+                          'market_register'.tr,
                           style: Styles.titleTextStyle,
                         ),
                       ],
                     ),
                     subtitle: Text(
-                      translator.translate('market_register_note'),
+                      'market_register_note'.tr,
                       style: Styles.subTitleTextStyle,
                     ),
                   ),
                   MyTextField(
-                    hintTextKey: 'company_name',
+                    hintTextKey: 'company_name'.tr,
                     nofLines: 1,
                     validateFunction: nullValidation,
                     saveFunction: saveCompanyName,
                   ),
                   MyTextField(
-                    hintTextKey: 'user_name',
+                    hintTextKey: 'user_name'.tr,
                     nofLines: 1,
                     validateFunction: nullValidation,
                     saveFunction: saveuserName,
                   ),
                   MyTextField(
-                    hintTextKey: 'password',
+                    hintTextKey: 'password'.tr,
                     nofLines: 1,
                     validateFunction: validatepasswordFunction,
                     saveFunction: savepassword,
                     textInputType: TextInputType.visiblePassword,
                   ),
                   MyTextField(
-                    hintTextKey: 'email',
+                    hintTextKey: 'email'.tr,
                     nofLines: 1,
                     validateFunction: validateEmailFunction,
                     saveFunction: saveemail,
@@ -227,10 +224,10 @@ class _MarketRegistrationPageState extends State<MarketRegistrationPage> {
                         color: AppColors.primaryColor,
                       ),
                       title: Obx(() => signInGetx.poitinAsString.value.isEmpty
-                          ? Text(translator.translate('company_location'))
+                          ? Text('company_location'.tr)
                           : Text(signInGetx.poitinAsString.value))),
                   MyTextField(
-                    hintTextKey: 'tel_number',
+                    hintTextKey: 'tel_number'.tr,
                     nofLines: 1,
                     validateFunction: nullValidation,
                     saveFunction: savephoneNumber,
@@ -246,13 +243,12 @@ class _MarketRegistrationPageState extends State<MarketRegistrationPage> {
                     validateFunction: nullValidation,
                     saveFunction: savecomapnyActivity,
                   ),
-                  CategoriesDropDown(),
                   SizedBox(
                     height: 40.h,
                   ),
                   PrimaryButton(
-                    buttonPressFun: saveForm,
-                    textKey: 'register',
+                    onPressed: saveForm,
+                    textKey: 'register'.tr,
                   )
                 ],
               ),

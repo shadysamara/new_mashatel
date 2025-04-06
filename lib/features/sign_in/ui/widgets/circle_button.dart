@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:mashatel/values/colors.dart';
+import 'package:get/get.dart';
 
 class CircleButton extends StatelessWidget {
-  String titleKey;
-  String svgUrl;
-  Function pressFun;
+  String? titleKey;
+  String? svgUrl;
+  Function? pressFun;
   CircleButton({this.pressFun, this.svgUrl, this.titleKey});
   @override
   Widget build(BuildContext context) {
@@ -45,19 +44,19 @@ class CircleButton extends StatelessWidget {
           splashColor: Colors.grey[100],
           elevation: 2.0,
           shape: CircleBorder(),
-          onPressed: () => pressFun(),
+          onPressed: () => pressFun == null ? null : pressFun!(),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               SvgPicture.asset(
-                this.svgUrl,
+                this.svgUrl ?? '',
                 semanticsLabel: this.titleKey,
                 height: 60.h,
               ),
               SizedBox(
                 height: 15.h,
               ),
-              Text(translator.translate(this.titleKey))
+              Text(this.titleKey?.tr ?? '')
             ],
           ),
         ),

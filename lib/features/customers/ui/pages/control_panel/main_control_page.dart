@@ -18,10 +18,6 @@ class ControlPanelPage extends StatelessWidget {
   AppGet appGet = Get.put(AppGet());
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     return Scaffold(
       endDrawer: AppSettings(appGet.appUser.value),
       appBar: BaseAppbar('control_panel'),

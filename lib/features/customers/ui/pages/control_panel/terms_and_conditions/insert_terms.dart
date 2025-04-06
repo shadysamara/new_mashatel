@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mashatel/features/customers/blocs/app_get.dart';
-import 'package:mashatel/features/customers/modles/about.dart';
 import 'package:mashatel/features/customers/modles/terms.dart';
 import 'package:mashatel/features/customers/repositories/mashatel_client.dart';
 import 'package:mashatel/features/sign_in/providers/signInGetx.dart';
@@ -25,9 +24,9 @@ class _NewCategoryState extends State<NewTerms> {
   AppGet appGet = Get.put(AppGet());
   GlobalKey<FormState> termsFormKey = GlobalKey();
 
-  String nameEn;
+  String? nameEn;
 
-  String nameAr;
+  String? nameAr;
 
   setCatNameAr(String value) {
     this.nameAr = value;
@@ -39,13 +38,13 @@ class _NewCategoryState extends State<NewTerms> {
 
   nullValidation(String value) {
     if (value.isEmpty) {
-      return translator.translate('null_error');
+      return 'null_error'.tr;
     }
   }
 
   saveForm() async {
-    if (termsFormKey.currentState.validate()) {
-      termsFormKey.currentState.save();
+    if (termsFormKey.currentState?.validate() == true) {
+      termsFormKey.currentState?.save();
       if (ConnectivityService.connectivityStatus !=
           ConnectivityStatus.Offline) {
         signInGetx.pr.show();
@@ -74,10 +73,6 @@ class _NewCategoryState extends State<NewTerms> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     return Scaffold(
       endDrawer: AppSettings(appGet.appUser.value),
       appBar: BaseAppbar('conditions'),
@@ -107,7 +102,7 @@ class _NewCategoryState extends State<NewTerms> {
               PrimaryButton(
                   color: AppColors.primaryColor,
                   textKey: 'add',
-                  buttonPressFun: saveForm)
+                  onPressed: saveForm)
             ],
           ),
         ),

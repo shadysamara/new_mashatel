@@ -1,21 +1,19 @@
-import 'dart:io';
-
-import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:multi_image_picker_plus/multi_image_picker_plus.dart';
 
 class ProductModel {
-  String nameAr;
-  String nameEn;
-  String descAr;
-  String descEn;
-  double price;
-  List<Asset> assetImages;
-  List<String> imagesUrls;
-  bool isInnerMessages;
-  bool isWithoutPhoneNumber;
-  String productId;
-  String marketId;
-  int bannedUsers;
-  bool isBanned;
+  String? nameAr;
+  String? nameEn;
+  String? descAr;
+  String? descEn;
+  double? price;
+  List<Asset>? assetImages;
+  List<String>? imagesUrls;
+  bool? isInnerMessages;
+  bool? isWithoutPhoneNumber;
+  String? productId;
+  String? marketId;
+  int? bannedUsers;
+  bool? isBanned;
   ProductModel(
       {this.descAr,
       this.descEn,

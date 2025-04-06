@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
+
 import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/customers/repositories/mashatel_client.dart';
 import 'package:mashatel/features/customers/ui/pages/shimmer_products.dart';
@@ -13,15 +13,11 @@ class ChatsPage extends StatelessWidget {
   AppGet appGet = Get.find();
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     return Scaffold(
         appBar: AppBar(
           title: Text('Chat App'),
         ),
-        body: AllExistsChats(MashatelClient.mashatelClient.getUser()));
+        body: AllExistsChats(MashatelClient.mashatelClient.getUser() ?? ''));
   }
 }
 
@@ -31,10 +27,6 @@ class AllExistsChats extends StatelessWidget {
   AppGet appGet = Get.find();
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     return Obx(() {
       return appGet.allChats.isNotEmpty
           ? ListView.builder(
@@ -93,7 +85,7 @@ class AllExistsChats extends StatelessWidget {
               },
             )
           : Center(
-              child: Text(translator.translate('no_chats')),
+              child: Text('no_chats'.tr),
             );
     });
   }

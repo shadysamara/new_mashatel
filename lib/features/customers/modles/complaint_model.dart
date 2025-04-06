@@ -1,8 +1,8 @@
 class ComplaintModel {
-  String email;
-  String mobileNumber;
-  String complaintTitle;
-  String complaintContent;
+  String? email;
+  String? mobileNumber;
+  String? complaintTitle;
+  String? complaintContent;
   ComplaintModel(
       {this.complaintContent,
       this.complaintTitle,

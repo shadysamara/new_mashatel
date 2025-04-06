@@ -6,16 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/customers/ui/pages/contact_us_page.dart';
 import 'package:mashatel/features/customers/ui/pages/control_panel/about_app/about_app.dart';
 import 'package:mashatel/features/customers/ui/pages/control_panel/main_control_page.dart';
 import 'package:mashatel/features/customers/ui/pages/control_panel/terms_and_conditions/terms.dart';
 import 'package:mashatel/features/customers/ui/pages/main_page.dart';
-import 'package:mashatel/features/customers/ui/pages/market_page.dart';
 import 'package:mashatel/features/messanger/ui/pages/chats.dart';
-import 'package:mashatel/features/messanger/ui/pages/massenger.dart';
 import 'package:mashatel/features/sign_in/models/userApp.dart';
 import 'package:mashatel/features/sign_in/repositories/registration_client.dart';
 import 'package:mashatel/features/sign_in/ui/pages/market_edit_profile.dart';
@@ -26,426 +23,279 @@ import 'package:mashatel/values/radii.dart';
 import 'package:mashatel/values/styles.dart';
 import 'package:mashatel/welcome_page.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
+import 'package:url_launcher/url_launcher.dart' as url_launcher;
 
 class AppSettings extends StatefulWidget {
   final AppUser appUser;
-  AppSettings(this.appUser);
+
+  const AppSettings(this.appUser);
+
   @override
-  _AppSettingsState createState() => _AppSettingsState();
+  State<AppSettings> createState() => _AppSettingsState();
 }
 
 class _AppSettingsState extends State<AppSettings> {
-  AppGet appGet = Get.put(AppGet());
-  List<bool> isSelected = [true, false];
-  String c = 'nasser';
-  setIsSelectedList() async {
-    String lang = await SPHelper.spHelper.getLanguage();
-    if (lang == 'ar') {
-      setState(() {
-        isSelected = [true, false];
-      });
-    } else {
-      setState(() {
-        isSelected = [false, true];
-      });
-    }
-  }
+  final AppGet appGet = Get.put(AppGet());
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  late List<bool> _isSelected;
 
   @override
   void initState() {
-    // isSelected = [true, false];
-    setIsSelectedList();
     super.initState();
+    _isSelected = [true, false]; // Default to Arabic
+    _loadLanguagePreference();
   }
 
-  whatsAppMessnger() async {
-    var phone = widget.appUser.phoneNumber;
-    var whatsappUrl = "";
-    if (Platform.isIOS) {
-      whatsappUrl = "whatsapp://wa.me/$phone}";
-    } else {
-      whatsappUrl = "whatsapp://send?phone=$phone}";
+  Future<void> _loadLanguagePreference() async {
+    final lang = await SPHelper.spHelper.getLanguage();
+    setState(() {
+      _isSelected = lang == 'ar' ? [true, false] : [false, true];
+    });
+  }
+
+  Future<void> _launchWhatsApp() async {
+    final phone = widget.appUser.phoneNumber;
+    if (phone == null) return;
+
+    final whatsappUrl = Platform.isIOS
+        ? 'whatsapp://wa.me/$phone'
+        : 'whatsapp://send?phone=$phone';
+
+    try {
+      final uri = Uri.parse(whatsappUrl);
+      if (await url_launcher.canLaunchUrl(uri)) {
+        await url_launcher.launchUrl(uri);
+      } else {
+        if (mounted) {
+          CustomDialougs.utils.showDialoug(
+            messageKey: 'whats_app_not_installed',
+            titleKey: 'alert',
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        CustomDialougs.utils.showDialoug(
+          messageKey: 'error_launching_whatsapp',
+          titleKey: 'alert',
+        );
+      }
     }
-    await UrlLauncher.canLaunch(whatsappUrl)
-        ? UrlLauncher.launch(whatsappUrl)
-        : CustomDialougs.utils.showDialoug(
-            messageKey: 'whats_app_not_installed', titleKey: 'alert');
   }
 
-  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
+    final isLoggedIn = _firebaseAuth.currentUser != null;
+
     return Drawer(
-      child: firebaseAuth.currentUser != null
-          ? Container(
-              child: Column(
-                children: [
-                  UserAccountsDrawerHeader(
-                      currentAccountPicture: widget.appUser.imagePath != null
-                          ? CircleAvatar(
-                              backgroundImage: CachedNetworkImageProvider(
-                                widget.appUser.imagePath,
-                              ),
-                              child: Container(),
-                            )
-                          : CircleAvatar(
-                              child: Text(widget.appUser != null
-                                  ? appGet.appUser.value.userName[0]
-                                      .toUpperCase()
-                                  : ''),
-                            ),
-                      accountName: Text(widget.appUser.userName),
-                      accountEmail: Text(widget.appUser.email)),
-                  Expanded(
-                    child: SettingsList(
-                      backgroundColor: Colors.transparent,
-                      sections: [
-                        SettingsSection(
-                          title: translator.translate('important_settings'),
-                          titleTextStyle: Styles.titleTextStyle,
-                          tiles: [
-                            SettingsTile(
-                              onTap: () {
-                                Get.to(MainPage());
-                              },
-                              title: translator.translate('home'),
-                              leading: Icon(Icons.home,
-                                  color: AppColors.primaryColor),
-                              trailing: Icon(Icons.arrow_right,
-                                  color: AppColors.primaryColor),
-                            ),
-                            SettingsTile(
-                                title: translator.translate('language'),
-                                leading: Icon(Icons.language,
-                                    color: AppColors.primaryColor),
-                                trailing: Container(
-                                  height: 45.h,
-                                  child: ToggleButtons(
-                                    borderColor: AppColors.primaryColor,
-                                    fillColor: AppColors.primaryColor,
-                                    borderWidth: 2,
-                                    selectedBorderColor: AppColors.primaryColor,
-                                    selectedColor: Colors.white,
-                                    borderRadius: Radii.k8pxRadius,
-                                    children: <Widget>[
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8.0),
-                                        child: Text(
-                                          translator.translate('arabic'),
-                                          style: TextStyle(fontSize: 17),
-                                        ),
-                                      ),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8.0),
-                                        child: Text(
-                                          translator.translate('english'),
-                                          style: TextStyle(fontSize: 17),
-                                        ),
-                                      ),
-                                    ],
-                                    onPressed: (int index) {
-                                      print(index);
-                                      if (index == 0) {
-                                        SPHelper.spHelper.setLanguage('ar');
-
-                                        setState(() {
-                                          isSelected[0] = true;
-                                          isSelected[1] = false;
-                                        });
-
-                                        translator.setNewLanguage(
-                                          context,
-                                          newLanguage: 'ar',
-                                          restart: true,
-                                          remember: true,
-                                        );
-                                      } else {
-                                        SPHelper.spHelper.setLanguage('en');
-                                        setState(() {
-                                          isSelected[0] = false;
-                                          isSelected[1] = true;
-                                        });
-
-                                        translator.setNewLanguage(
-                                          context,
-                                          newLanguage: 'en',
-                                          restart: true,
-                                          remember: true,
-                                        );
-                                      }
-                                    },
-                                    isSelected: isSelected,
-                                  ),
-                                )),
-                            //////////////////////////////////////////////////
-                            widget.appUser.isAdmin == false
-                                ? SettingsTile(
-                                    onTap: () {
-                                      Get.to(ChatsPage());
-                                    },
-                                    title: translator.translate('messages'),
-                                    leading: Icon(Icons.email,
-                                        color: AppColors.primaryColor),
-                                    trailing: Icon(Icons.arrow_right,
-                                        color: AppColors.primaryColor),
-                                  )
-                                : SettingsTile(
-                                    onTap: () {
-                                      Get.to(ControlPanelPage());
-                                    },
-                                    title:
-                                        translator.translate('control_panel'),
-                                    leading: Icon(
-                                      Icons.settings,
-                                      color: AppColors.primaryColor,
-                                    ),
-                                    trailing: Icon(Icons.arrow_right,
-                                        color: AppColors.primaryColor),
-                                  ),
-
-                            //////////////////////////////////////////////////
-                            widget.appUser.isMarket == true
-                                ? SettingsTile(
-                                    onTap: () {
-                                      Get.to(EditMarketProfilePage(
-                                        appUser: widget.appUser,
-                                      ));
-                                    },
-                                    title: translator.translate('edit_profile'),
-                                    leading: Icon(
-                                      Icons.shopping_cart,
-                                      color: AppColors.primaryColor,
-                                    ),
-                                    trailing: Icon(Icons.arrow_right,
-                                        color: AppColors.primaryColor),
-                                  )
-                                : SettingsTile(
-                                    onTap: () {
-                                      Get.to(ContactUsPage());
-                                    },
-                                    title: translator.translate('contact_us'),
-                                    leading: Icon(
-                                      Icons.call,
-                                      color: AppColors.primaryColor,
-                                    ),
-                                    trailing: Icon(Icons.arrow_right,
-                                        color: AppColors.primaryColor),
-                                  ),
-                            /////////////////////////////////////////////////
-                          ],
-                        ),
-                        //////////////////////////////////////////////////////////////
-
-                        SettingsSection(
-                          titleTextStyle: Styles.titleTextStyle,
-                          title: translator.translate('app_data'),
-                          tiles: [
-                            SettingsTile(
-                              onTap: () {
-                                Get.to(AboutApp());
-                              },
-                              title: translator.translate('About_app'),
-                              leading: Icon(
-                                FontAwesomeIcons.infoCircle,
-                                color: AppColors.primaryColor,
-                              ),
-                              trailing: Icon(Icons.arrow_right,
-                                  color: AppColors.primaryColor),
-                            ),
-                            SettingsTile(
-                              onTap: () {
-                                Get.to(TermsPage());
-                              },
-                              title: translator.translate('conditions'),
-                              leading: Icon(
-                                FontAwesomeIcons.gavel,
-                                color: AppColors.primaryColor,
-                              ),
-                              trailing: Icon(Icons.arrow_right,
-                                  color: AppColors.primaryColor),
-                            ),
-                          ],
-                        ),
-                        /////////////////////////
-                        SettingsSection(
-                          titleTextStyle: Styles.titleTextStyle,
-                          title: translator.translate('signout'),
-                          tiles: [
-                            SettingsTile(
-                              onTap: () {
-                                RegistrationClient.registrationIntance
-                                    .signOut();
-                              },
-                              title: translator.translate('signout'),
-                              leading: Icon(
-                                FontAwesomeIcons.signOutAlt,
-                                color: AppColors.primaryColor,
-                              ),
-                              trailing: Icon(Icons.arrow_right,
-                                  color: AppColors.primaryColor),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            )
-          : Container(
-              child: Column(
-                children: [
-                  UserAccountsDrawerHeader(
-                      accountName: Text('Guest'),
-                      accountEmail: Text('No Email')),
-                  Expanded(
-                    child: SettingsList(
-                      backgroundColor: Colors.transparent,
-                      sections: [
-                        SettingsSection(
-                          title: translator.translate('important_settings'),
-                          titleTextStyle: Styles.titleTextStyle,
-                          tiles: [
-                            SettingsTile(
-                              onTap: () {
-                                Get.to(MainPage());
-                              },
-                              title: translator.translate('home'),
-                              leading: Icon(Icons.home,
-                                  color: AppColors.primaryColor),
-                              trailing: Icon(Icons.arrow_right,
-                                  color: AppColors.primaryColor),
-                            ),
-                            SettingsTile(
-                                title: translator.translate('language'),
-                                leading: Icon(Icons.language,
-                                    color: AppColors.primaryColor),
-                                trailing: Container(
-                                  height: 45.h,
-                                  child: ToggleButtons(
-                                    borderColor: AppColors.primaryColor,
-                                    fillColor: AppColors.primaryColor,
-                                    borderWidth: 2,
-                                    selectedBorderColor: AppColors.primaryColor,
-                                    selectedColor: Colors.white,
-                                    borderRadius: Radii.k8pxRadius,
-                                    children: <Widget>[
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8.0),
-                                        child: Text(
-                                          translator.translate('arabic'),
-                                          style: TextStyle(fontSize: 17),
-                                        ),
-                                      ),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8.0),
-                                        child: Text(
-                                          translator.translate('english'),
-                                          style: TextStyle(fontSize: 17),
-                                        ),
-                                      ),
-                                    ],
-                                    onPressed: (int index) {
-                                      print(index);
-                                      if (index == 0) {
-                                        SPHelper.spHelper.setLanguage('ar');
-
-                                        setState(() {
-                                          isSelected[0] = true;
-                                          isSelected[1] = false;
-                                        });
-
-                                        translator.setNewLanguage(
-                                          context,
-                                          newLanguage: 'ar',
-                                          restart: true,
-                                          remember: true,
-                                        );
-                                      } else {
-                                        SPHelper.spHelper.setLanguage('en');
-                                        setState(() {
-                                          isSelected[0] = false;
-                                          isSelected[1] = true;
-                                        });
-
-                                        translator.setNewLanguage(
-                                          context,
-                                          newLanguage: 'en',
-                                          restart: true,
-                                          remember: true,
-                                        );
-                                      }
-                                    },
-                                    isSelected: isSelected,
-                                  ),
-                                )),
-                            //////////////////////////////////////////////////
-
-                            /////////////////////////////////////////////////
-                          ],
-                        ),
-                        //////////////////////////////////////////////////////////////
-
-                        SettingsSection(
-                          titleTextStyle: Styles.titleTextStyle,
-                          title: translator.translate('app_data'),
-                          tiles: [
-                            SettingsTile(
-                              onTap: () {
-                                Get.to(AboutApp());
-                              },
-                              title: translator.translate('About_app'),
-                              leading: Icon(
-                                FontAwesomeIcons.infoCircle,
-                                color: AppColors.primaryColor,
-                              ),
-                              trailing: Icon(Icons.arrow_right,
-                                  color: AppColors.primaryColor),
-                            ),
-                            SettingsTile(
-                              onTap: () {
-                                Get.to(TermsPage());
-                              },
-                              title: translator.translate('conditions'),
-                              leading: Icon(
-                                FontAwesomeIcons.gavel,
-                                color: AppColors.primaryColor,
-                              ),
-                              trailing: Icon(Icons.arrow_right,
-                                  color: AppColors.primaryColor),
-                            ),
-                          ],
-                        ),
-                        /////////////////////////
-                        SettingsSection(
-                          titleTextStyle: Styles.titleTextStyle,
-                          title: translator.translate('login'),
-                          tiles: [
-                            SettingsTile(
-                              onTap: () {
-                                Get.to(WelcomePage());
-                              },
-                              title: translator.translate('login'),
-                              leading: Icon(
-                                FontAwesomeIcons.signOutAlt,
-                                color: AppColors.primaryColor,
-                              ),
-                              trailing: Icon(Icons.arrow_right,
-                                  color: AppColors.primaryColor),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+      child: Column(
+        children: [
+          _buildHeader(isLoggedIn),
+          Expanded(
+            child: SettingsList(
+              contentPadding: EdgeInsets.zero,
+              platform: DevicePlatform.android,
+              sections: [
+                _buildImportantSettingsSection(isLoggedIn),
+                _buildAppDataSection(),
+                _buildAuthSection(isLoggedIn),
+              ],
             ),
+          ),
+        ],
+      ),
     );
+  }
+
+  Widget _buildHeader(bool isLoggedIn) {
+    return UserAccountsDrawerHeader(
+      decoration: BoxDecoration(color: AppColors.primaryColor),
+      currentAccountPicture: CircleAvatar(
+        backgroundColor: Colors.white,
+        child: widget.appUser.imagePath != null &&
+                widget.appUser.imagePath!.isNotEmpty
+            ? CachedNetworkImage(
+                imageUrl: widget.appUser.imagePath!,
+                fit: BoxFit.cover,
+                errorWidget: (context, url, error) => Text(
+                  widget.appUser.userName?.isNotEmpty == true
+                      ? widget.appUser.userName![0].toUpperCase()
+                      : '',
+                ),
+              )
+            : Text(
+                widget.appUser.userName?.isNotEmpty == true
+                    ? widget.appUser.userName![0].toUpperCase()
+                    : '',
+                style: const TextStyle(color: Colors.black),
+              ),
+      ),
+      accountName:
+          Text(isLoggedIn ? widget.appUser.userName ?? '' : 'Guest'.tr),
+      accountEmail: Text(isLoggedIn ? widget.appUser.email ?? '' : 'No Email'),
+    );
+  }
+
+  SettingsSection _buildImportantSettingsSection(bool isLoggedIn) {
+    return SettingsSection(
+      title: Text('important_settings'.tr, style: Styles.titleTextStyle),
+      tiles: [
+        SettingsTile.navigation(
+          title: Text(
+            'home'.tr,
+            style: TextStyle(fontFamily: "DIN", height: 0.5),
+          ),
+          leading: const Icon(Icons.home, color: AppColors.primaryColor),
+          trailing:
+              const Icon(Icons.arrow_right, color: AppColors.primaryColor),
+          onPressed: (_) => Get.to(() => MainPage()),
+        ),
+        SettingsTile(
+          title: Text(
+            'language'.tr,
+            style: TextStyle(fontFamily: "DIN", height: 0.5),
+          ),
+          leading: const Icon(Icons.language, color: AppColors.primaryColor),
+          trailing: SizedBox(
+            height: 45.h,
+            child: ToggleButtons(
+              borderColor: AppColors.primaryColor,
+              fillColor: AppColors.primaryColor,
+              borderWidth: 2,
+              selectedBorderColor: AppColors.primaryColor,
+              selectedColor: Colors.white,
+              borderRadius: Radii.k8pxRadius,
+              onPressed: _handleLanguageToggle,
+              isSelected: _isSelected,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text('arabic'.tr, style: TextStyle(fontSize: 17)),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text('english'.tr, style: TextStyle(fontSize: 17)),
+                ),
+              ],
+            ),
+          ),
+        ),
+        if (isLoggedIn) ..._buildUserSpecificTiles(),
+      ],
+    );
+  }
+
+  List<SettingsTile> _buildUserSpecificTiles() {
+    return [
+      if (widget.appUser.isAdmin == false)
+        SettingsTile.navigation(
+          title: Text(
+            'messages'.tr,
+            style: TextStyle(fontFamily: "DIN", height: 0.5),
+          ),
+          leading: const Icon(Icons.email, color: AppColors.primaryColor),
+          trailing:
+              const Icon(Icons.arrow_right, color: AppColors.primaryColor),
+          onPressed: (_) => Get.to(() => ChatsPage()),
+        )
+      else
+        SettingsTile.navigation(
+          title: Text(
+            'control_panel'.tr,
+            style: TextStyle(fontFamily: "DIN", height: 0.5),
+          ),
+          leading: const Icon(Icons.settings, color: AppColors.primaryColor),
+          trailing:
+              const Icon(Icons.arrow_right, color: AppColors.primaryColor),
+          onPressed: (_) => Get.to(() => ControlPanelPage()),
+        ),
+      if (widget.appUser.isMarket == true)
+        SettingsTile.navigation(
+          title: Text(
+            'edit_profile'.tr,
+            style: TextStyle(fontFamily: "DIN", height: 0.5),
+          ),
+          leading:
+              const Icon(Icons.shopping_cart, color: AppColors.primaryColor),
+          trailing:
+              const Icon(Icons.arrow_right, color: AppColors.primaryColor),
+          onPressed: (_) =>
+              Get.to(() => EditMarketProfilePage(appUser: widget.appUser)),
+        )
+      else
+        SettingsTile.navigation(
+          title: Text(
+            'contact_us'.tr,
+            style: TextStyle(fontFamily: "DIN", height: 0.5),
+          ),
+          leading: const Icon(Icons.call, color: AppColors.primaryColor),
+          trailing:
+              const Icon(Icons.arrow_right, color: AppColors.primaryColor),
+          onPressed: (_) => Get.to(() => ContactUsPage()),
+        ),
+    ];
+  }
+
+  SettingsSection _buildAppDataSection() {
+    return SettingsSection(
+      title: Text('app_data'.tr, style: Styles.titleTextStyle),
+      tiles: [
+        SettingsTile.navigation(
+          title: Text(
+            'About_app'.tr,
+            style: TextStyle(fontFamily: "DIN", height: 0.5),
+          ),
+          leading: const Icon(FontAwesomeIcons.infoCircle,
+              color: AppColors.primaryColor),
+          trailing:
+              const Icon(Icons.arrow_right, color: AppColors.primaryColor),
+          onPressed: (_) => Get.to(() => AboutApp()),
+        ),
+        SettingsTile.navigation(
+          title: Text(
+            'conditions'.tr,
+            style: TextStyle(fontFamily: "DIN", height: 0.5),
+          ),
+          leading:
+              const Icon(FontAwesomeIcons.gavel, color: AppColors.primaryColor),
+          trailing:
+              const Icon(Icons.arrow_right, color: AppColors.primaryColor),
+          onPressed: (_) => Get.to(() => TermsPage()),
+        ),
+      ],
+    );
+  }
+
+  SettingsSection _buildAuthSection(bool isLoggedIn) {
+    return SettingsSection(
+      title: Text(isLoggedIn ? 'signout'.tr : 'login'.tr,
+          style: Styles.titleTextStyle),
+      tiles: [
+        SettingsTile.navigation(
+          title: Text(
+            isLoggedIn ? 'signout'.tr : 'login'.tr,
+            style: TextStyle(fontFamily: "DIN", height: 0.5),
+          ),
+          leading: const Icon(FontAwesomeIcons.signOutAlt,
+              color: AppColors.primaryColor),
+          trailing:
+              const Icon(Icons.arrow_right, color: AppColors.primaryColor),
+          onPressed: (_) => isLoggedIn
+              ? RegistrationClient.registrationIntance.signOut()
+              : Get.to(() => WelcomePage()),
+        ),
+      ],
+    );
+  }
+
+  void _handleLanguageToggle(int index) {
+    setState(() {
+      _isSelected = index == 0 ? [true, false] : [false, true];
+    });
+    final newLang = index == 0 ? 'ar' : 'en';
+    SPHelper.spHelper.setLanguage(newLang);
+    // Assuming 'translator' is available globally or through GetX
+    // You might need to adjust this based on your actual translation implementation
+    Get.updateLocale(Locale(newLang));
   }
 }

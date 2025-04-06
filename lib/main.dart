@@ -2,23 +2,20 @@ import 'dart:async';
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:mashatel/error_screen.dart';
 import 'package:mashatel/features/customers/blocs/app_get.dart';
-import 'package:mashatel/features/messanger/ui/pages/massenger.dart';
-import 'package:mashatel/features/sign_in/ui/pages/testpage.dart';
 import 'package:mashatel/loading_screen.dart';
+import 'package:mashatel/localization_service.dart';
 import 'package:mashatel/services/connectvity_service.dart';
 import 'package:mashatel/services/dynamic_links_service.dart';
 import 'package:mashatel/splach.dart';
-import 'package:mashatel/testScreen.dart';
 import 'package:mashatel/values/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/screenutil.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mashatel/services/shared_prefrences_helper.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -30,7 +27,7 @@ final BehaviorSubject<ReceivedNotification> didReceiveLocalNotificationSubject =
 final BehaviorSubject<String> selectNotificationSubject =
     BehaviorSubject<String>();
 
-NotificationAppLaunchDetails notificationAppLaunchDetails;
+NotificationAppLaunchDetails? notificationAppLaunchDetails;
 
 class ReceivedNotification {
   final int id;
@@ -39,50 +36,37 @@ class ReceivedNotification {
   final String payload;
 
   ReceivedNotification({
-    @required this.id,
-    @required this.title,
-    @required this.body,
-    @required this.payload,
+    required this.id,
+    required this.title,
+    required this.body,
+    required this.payload,
   });
 }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  AppGet appGet = Get.put(AppGet());
+  Get.put<AppGet>(AppGet(), permanent: true);
+  await SPHelper.spHelper.initSharedPrefrences();
   notificationAppLaunchDetails =
       await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
-
   var initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
-  // Note: permissions aren't requested here just to demonstrate that can be done later using the `requestPermissions()` method
-  // of the `IOSFlutterLocalNotificationsPlugin` class
-  var initializationSettingsIOS = IOSInitializationSettings(
+  var initializationSettingsIOS = DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
-      requestSoundPermission: false,
-      onDidReceiveLocalNotification:
-          (int id, String title, String body, String payload) async {
-        didReceiveLocalNotificationSubject.add(ReceivedNotification(
-            id: id, title: title, body: body, payload: payload));
-      });
+      requestSoundPermission: false);
   var initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
   await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-      onSelectNotification: (String payload) async {
-    if (payload != null) {
-      debugPrint('notification payload: ' + payload);
+      onDidReceiveNotificationResponse: (NotificationResponse response) async {
+    if (response.payload != null) {
+      debugPrint('notification payload: ${response.payload}');
     }
-    selectNotificationSubject.add(payload);
+    selectNotificationSubject.add(response.payload ?? '');
   });
-
-  await translator.init(
-    localeDefault: LocalizationDefaultType.device,
-    languagesList: <String>['ar', 'en'],
-    assetsDirectory: 'assets/langs/',
-  );
 
   bool isFirstTime = await SPHelper.spHelper.checkIfFirstTime();
   if (isFirstTime == true) {
-    SPHelper.spHelper.setLanguage(translator.currentLanguage);
+    SPHelper.spHelper.setLanguage(Get.deviceLocale?.languageCode ?? 'ar');
   }
 
   final WidgetsBinding binding = WidgetsFlutterBinding.ensureInitialized();
@@ -98,12 +82,12 @@ void main() async {
       // status bar color
       ));
   HttpOverrides.global = new MyHttpOverrides();
-  runApp(LocalizedApp(child: MyApp()));
+  runApp(MyApp());
 }
 
 class MyHttpOverrides extends HttpOverrides {
   @override
-  HttpClient createHttpClient(SecurityContext context) {
+  HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
       ..badCertificateCallback =
           (X509Certificate cert, String host, int port) => true;
@@ -123,14 +107,31 @@ Map<int, Color> color = {
   900: Color.fromRGBO(201, 6, 40, 1),
 };
 
-var _myTheme = new ThemeData(
+final ThemeData _myTheme = ThemeData(
     primarySwatch: MaterialColor(0xFFC10627, color),
     primaryColor: MaterialColor(0xff88A53B, color),
-    buttonColor: MaterialColor(0xff88A53B, color),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+          backgroundColor: MaterialColor(0xff88A53B, color)),
+    ),
     brightness: Brightness.light,
-    accentColor: Colors.white,
+    colorScheme: ThemeData().colorScheme.copyWith(secondary: Colors.white),
     fontFamily: "DIN NEXT ARABIC REGULAR",
-    textTheme: TextTheme(body1: TextStyle(fontSize: 17)));
+    appBarTheme: AppBarTheme(
+        backgroundColor: AppColors.primaryColor,
+        systemOverlayStyle: SystemUiOverlayStyle.light,
+        iconTheme: IconThemeData(color: Colors.white),
+        titleTextStyle: TextStyle(
+            fontSize: 20.sp,
+            fontFamily: "DIN",
+            color: Colors.white,
+            fontWeight: FontWeight.bold)),
+    textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+            backgroundColor: AppColors.primaryColor,
+            textStyle: TextStyle(fontSize: 17.sp, fontFamily: "DIN"))),
+    textTheme:
+        TextTheme(bodyMedium: TextStyle(fontSize: 17.sp, fontFamily: "DIN")));
 
 class MyApp extends StatefulWidget {
   // This widget is the root of your application.
@@ -139,7 +140,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  ConnectivityService connectivityService;
+  ConnectivityService? connectivityService;
   @override
   void initState() {
     super.initState();
@@ -148,19 +149,25 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: _myTheme,
-      localizationsDelegates: translator.delegates,
-      locale: translator.locale,
-      supportedLocales: translator.locals(),
-      home: MaterialApp(
-        theme: _myTheme,
-        title: translator.translate('app_name'),
-        home: BrokerPage(),
-        debugShowCheckedModeBanner: false,
-      ),
-    );
+    return ScreenUtilInit(
+        designSize: const Size(375, 821),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (_, child) {
+          return GetMaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: _myTheme,
+            locale: LocalizationService.getSavedLocal(),
+            fallbackLocale: LocalizationService.fallbackLocale,
+            translations: LocalizationService(),
+            home: MaterialApp(
+              theme: _myTheme,
+              title: 'app_name',
+              home: BrokerPage(),
+              debugShowCheckedModeBanner: false,
+            ),
+          );
+        });
   }
 }
 
@@ -172,12 +179,13 @@ class BrokerPage extends StatefulWidget {
 class _BrokerPageState extends State<BrokerPage> with WidgetsBindingObserver {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   final DynamicLinkService _dynamicLinkService = DynamicLinkService();
-  Timer _timerLink;
+  Timer? _timerLink;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+
     _timerLink = new Timer(
       const Duration(milliseconds: 1000),
       () {
@@ -202,17 +210,13 @@ class _BrokerPageState extends State<BrokerPage> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     if (_timerLink != null) {
-      _timerLink.cancel();
+      _timerLink?.cancel();
     }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     return FutureBuilder(
       // Initialize FlutterFire:
       future: _initialization,

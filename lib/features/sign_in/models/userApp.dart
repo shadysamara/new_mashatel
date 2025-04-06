@@ -1,21 +1,20 @@
 import 'dart:io';
 
 class AppUser {
-  String userName;
-  String phoneNumber;
-  String email;
-  String password;
-  String companyName;
-  File marketLogo;
-  String imagePath;
-  double lat;
-  double lon;
-  String comapnyActivity;
-  bool isAdmin;
-  bool isMarket;
-  bool isCustomer;
-  String userId;
-  String catId;
+  String? userName;
+  String? phoneNumber;
+  String? email;
+  String? password;
+  String? companyName;
+  File? marketLogo;
+  String? imagePath;
+  double? lat;
+  double? lon;
+  String? comapnyActivity;
+  bool? isAdmin;
+  bool? isMarket;
+  bool? isCustomer;
+  String? userId;
 
   AppUser(
       {this.email,
@@ -31,7 +30,6 @@ class AppUser {
       this.isAdmin,
       this.isCustomer,
       this.userId,
-      this.catId,
       this.isMarket});
   AppUser.fromCustomerJson(Map map) {
     this.userName = map['userName'];
@@ -55,7 +53,6 @@ class AppUser {
     this.isMarket = map['isMarket'];
     this.isCustomer = map['isCustomer'];
     this.userId = map['userId'];
-    this.catId = map['catId'];
   }
 
   Map<String, dynamic> toCustomerJson() {
@@ -81,8 +78,7 @@ class AppUser {
       'longitude': this.lon,
       'isAdmin': this.isAdmin,
       'isMarket': this.isMarket,
-      'isCustomer': this.isCustomer,
-      'catId': this.catId
+      'isCustomer': this.isCustomer
     };
   }
 }

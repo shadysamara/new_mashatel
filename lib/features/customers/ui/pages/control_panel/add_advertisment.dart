@@ -3,11 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/customers/modles/advertisment.dart';
-import 'package:mashatel/features/customers/modles/category.dart';
 import 'package:mashatel/features/customers/repositories/mashatel_client.dart';
 import 'package:mashatel/services/connectvity_service.dart';
 import 'package:mashatel/utils/custom_dialoug.dart';
@@ -29,9 +28,9 @@ class _NewCategoryState extends State<AddNewPage> {
 
   bool isUploaded = false;
 
-  File imageFile;
+  File? imageFile;
 
-  String url;
+  String? url;
 
   setUrl(String value) {
     this.url = value;
@@ -39,21 +38,21 @@ class _NewCategoryState extends State<AddNewPage> {
 
   nullValidation(String value) {
     if (value.isEmpty) {
-      return translator.translate('null_error');
+      return 'null_error'.tr;
     } else if (!isURL(value)) {
-      return translator.translate('invalid_url');
+      return 'invalid_url'.tr;
     }
   }
 
   saveForm() async {
-    if (formKey.currentState.validate()) {
+    if (formKey.currentState?.validate() == true) {
       if (appGet.imagePath.value.isNotEmpty) {
-        formKey.currentState.save();
+        formKey.currentState?.save();
         if (ConnectivityService.connectivityStatus !=
             ConnectivityStatus.Offline) {
           Advertisment advertisment =
               Advertisment(url: this.url, imageUrl: appGet.imagePath.value);
-          String catId =
+          String? catId =
               await MashatelClient.mashatelClient.addNewAdv(advertisment);
           if (catId != null) {
             CustomDialougs.utils.showSackbar(
@@ -75,15 +74,9 @@ class _NewCategoryState extends State<AddNewPage> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     return Scaffold(
       endDrawer: AppSettings(appGet.appUser.value),
-      appBar: AppBar(
-        title: Text(translator.translate('new_ad')),
-      ),
+      appBar: AppBar(title: Text('new_ad'.tr)),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 30.h),
         child: SingleChildScrollView(
@@ -91,10 +84,13 @@ class _NewCategoryState extends State<AddNewPage> {
             children: [
               GestureDetector(onTap: () async {
                 appGet.imagePath.value = '';
-                PickedFile pickImage =
-                    await ImagePicker().getImage(source: ImageSource.gallery);
+                XFile? pickImage =
+                    await ImagePicker().pickImage(source: ImageSource.gallery);
+                if (pickImage == null) {
+                  return;
+                }
                 this.imageFile = File(pickImage.path);
-                appGet.setLocalImageFile(imageFile);
+                appGet.setLocalImageFile(imageFile!);
               }, child: Obx(() {
                 return appGet.localImageFilePath.value.isNotEmpty
                     ? appGet.imagePath.value.isNotEmpty
@@ -130,7 +126,11 @@ class _NewCategoryState extends State<AddNewPage> {
                 child: PrimaryButton(
                   color: AppColors.primaryColor,
                   textKey: 'upload_image',
-                  buttonPressFun: () => appGet.uploadImage(imageFile),
+                  onPressed: () {
+                    if (imageFile != null) {
+                      appGet.uploadImage(imageFile!);
+                    }
+                  },
                 ),
               ),
               SizedBox(
@@ -151,7 +151,7 @@ class _NewCategoryState extends State<AddNewPage> {
               PrimaryButton(
                   color: AppColors.primaryColor,
                   textKey: 'add',
-                  buttonPressFun: saveForm)
+                  onPressed: saveForm)
             ],
           ),
         ),

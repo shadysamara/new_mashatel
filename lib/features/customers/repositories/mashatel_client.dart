@@ -17,6 +17,7 @@ import 'package:mashatel/features/sign_in/models/userApp.dart';
 import 'package:mashatel/features/sign_in/providers/signInGetx.dart';
 import 'package:mashatel/utils/custom_dialoug.dart';
 import 'package:mashatel/features/customers/modles/about.dart';
+import 'package:multi_image_picker_plus/multi_image_picker_plus.dart';
 
 class MashatelClient {
   MashatelClient._();
@@ -93,9 +94,11 @@ class MashatelClient {
           await firestore.collection(collectionName).get();
       final List<QueryDocumentSnapshot> queryDocumentSnapshot =
           querySnapshot.docs;
-      final List<Category> categories = queryDocumentSnapshot
-          .map((e) => Category.fromMap(e.data() as Map<String, dynamic>))
-          .toList();
+      final List<Category> categories = queryDocumentSnapshot.map((e) {
+        Map<String, dynamic> data = e.data() as Map<String, dynamic>;
+        data['id'] = e.id;
+        return Category.fromMap(data);
+      }).toList();
       signInGetx.pr.hide();
       return categories;
     } catch (e) {
@@ -107,12 +110,11 @@ class MashatelClient {
   }
 
   //////////////////////////////////////////////////////////////////
-  Future<List<AppUser>?> getAllMarkets(String? catId) async {
+  Future<List<AppUser>?> getAllMarkets() async {
     try {
       final QuerySnapshot querySnapshot = await firestore
           .collection('users')
           .where('isMarket', isEqualTo: true)
-          .where('catId', isEqualTo: catId)
           .get();
       final List<QueryDocumentSnapshot> queryDocumentSnapshot =
           querySnapshot.docs;
@@ -130,9 +132,9 @@ class MashatelClient {
   }
 
   ///////////////////////////////////////////////////////////////////
-  Future<void> removeMarket(String marketId, String catId) async {
+  Future<void> removeMarket(String marketId) async {
     await firestore.collection('users').doc(marketId).delete();
-    await getAllMarkets(catId);
+    await getAllMarkets();
     CustomDialougs.utils.showDialoug(
         messageKey: 'delete_confirmation',
         titleKey: 'confirmation',
@@ -319,7 +321,7 @@ class MashatelClient {
     try {
       final List<Asset> assetImages = productModel.assetImages ?? [];
       final List<String> urls =
-          await uploadAllImages(assetImages, appUser.userName);
+          await uploadAllImages(assetImages, appUser.userName ?? '');
       productModel.imagesUrls = urls;
 
       final DocumentReference documentReference =
@@ -352,7 +354,7 @@ class MashatelClient {
           documentSnapshot.data() as Map<String, dynamic>;
       map['productId'] = documentSnapshot.id;
       final ProductModel product = ProductModel.fromMap(map);
-      product.bannedUsers = bannedUsers;
+      product.bannedUsers = bannedUsers ?? 0;
       return product;
     } else {
       return null;

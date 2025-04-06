@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
+
 import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/customers/ui/pages/market_page.dart';
 import 'package:mashatel/features/customers/ui/widgets/advertisment_widget.dart';
@@ -16,10 +16,6 @@ class MarketsPage extends StatelessWidget {
   SignInGetx signInGetx = Get.put(SignInGetx());
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     return WillPopScope(
       onWillPop: () {
         appGet.resetMarkets();
@@ -27,7 +23,9 @@ class MarketsPage extends StatelessWidget {
       },
       child: Scaffold(
         appBar: BaseAppbar('markets'),
-        endDrawer: AppSettings(appGet.appUser.value),
+        endDrawer: AppSettings(
+          appGet.appUser.value,
+        ),
         body: Container(
           padding: EdgeInsets.symmetric(vertical: 15.h),
           child: Obx(() {
@@ -44,7 +42,9 @@ class MarketsPage extends StatelessWidget {
                                 appGet.getMarketProducts(
                                     appGet.markets[index].userId);
 
-                                Get.to(MarketPage(appGet.markets[index]));
+                                Get.to(MarketPage(
+                                  appUser: appGet.markets[index],
+                                ));
                               },
                               child: MarketWidget(
                                 appUser: appGet.markets[index],
@@ -66,7 +66,7 @@ class MarketsPage extends StatelessWidget {
                             appGet.getMarketProducts(
                                 appGet.markets[index].userId);
 
-                            Get.to(MarketPage(appGet.markets[index]));
+                            Get.to(MarketPage(appUser: appGet.markets[index]));
                           },
                           child: MarketWidget(
                             appUser: appGet.markets[index],

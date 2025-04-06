@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/customers/modles/category.dart';
@@ -27,11 +27,11 @@ class _NewCategoryState extends State<NewCategory> {
 
   bool isUploaded = false;
 
-  File imageFile;
+  File? imageFile;
 
-  String nameEn;
+  String? nameEn;
 
-  String nameAr;
+  String? nameAr;
 
   setCatNameAr(String value) {
     this.nameAr = value;
@@ -43,19 +43,19 @@ class _NewCategoryState extends State<NewCategory> {
 
   nullValidation(String value) {
     if (value.isEmpty) {
-      return translator.translate('null_error');
+      return 'null_error'.tr;
     }
   }
 
   saveForm() async {
-    if (formKey.currentState.validate()) {
+    if (formKey.currentState?.validate() == true) {
       if (appGet.imagePath.value.isNotEmpty) {
-        formKey.currentState.save();
+        formKey.currentState?.save();
         if (ConnectivityService.connectivityStatus !=
             ConnectivityStatus.Offline) {
           Category category =
               Category(nameAr: this.nameAr, nameEn: this.nameEn);
-          String catId = await appGet.addNewCategory(category);
+          String? catId = await appGet.addNewCategory(category);
           if (catId != null) {
             CustomDialougs.utils.showSackbar(
                 messageKey: 'success_category_added', titleKey: 'success');
@@ -78,10 +78,6 @@ class _NewCategoryState extends State<NewCategory> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     return Scaffold(
       appBar: BaseAppbar('new_category'),
       endDrawer: AppSettings(appGet.appUser.value),
@@ -92,10 +88,13 @@ class _NewCategoryState extends State<NewCategory> {
             children: [
               GestureDetector(onTap: () async {
                 appGet.imagePath.value = '';
-                PickedFile pickImage =
-                    await ImagePicker().getImage(source: ImageSource.gallery);
+                XFile? pickImage =
+                    await ImagePicker().pickImage(source: ImageSource.gallery);
+                if (pickImage == null) {
+                  return;
+                }
                 this.imageFile = File(pickImage.path);
-                appGet.setLocalImageFile(imageFile);
+                appGet.setLocalImageFile(imageFile!);
               }, child: Obx(() {
                 return appGet.localImageFilePath.value.isNotEmpty
                     ? appGet.imagePath.value.isNotEmpty
@@ -131,7 +130,11 @@ class _NewCategoryState extends State<NewCategory> {
                 child: PrimaryButton(
                   color: AppColors.primaryColor,
                   textKey: 'upload_image',
-                  buttonPressFun: () => appGet.uploadImage(imageFile),
+                  onPressed: () {
+                    if (imageFile != null) {
+                      appGet.uploadImage(imageFile!);
+                    }
+                  },
                 ),
               ),
               SizedBox(
@@ -158,7 +161,7 @@ class _NewCategoryState extends State<NewCategory> {
               PrimaryButton(
                   color: AppColors.primaryColor,
                   textKey: 'add',
-                  buttonPressFun: saveForm)
+                  onPressed: saveForm)
             ],
           ),
         ),

@@ -6,7 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
+
 import 'package:mashatel/features/sign_in/models/userApp.dart';
 import 'package:mashatel/features/sign_in/providers/signInGetx.dart';
 import 'package:mashatel/features/sign_in/repositories/registration_client.dart';
@@ -23,7 +23,7 @@ import 'package:string_validator/string_validator.dart';
 
 class EditMarketProfilePage extends StatefulWidget {
   AppUser appUser;
-  EditMarketProfilePage({this.appUser});
+  EditMarketProfilePage({required this.appUser});
 
   @override
   _EditMarketProfilePageState createState() => _EditMarketProfilePageState();
@@ -32,19 +32,19 @@ class EditMarketProfilePage extends StatefulWidget {
 class _EditMarketProfilePageState extends State<EditMarketProfilePage> {
   GlobalKey<FormState> editMarketProfile = GlobalKey();
 
-  String companyName;
+  String? companyName;
 
-  String userName;
+  String? userName;
 
-  String password;
+  String? password;
 
-  String email;
+  String? email;
 
-  String phoneNumber;
+  String? phoneNumber;
 
-  File marketLogo;
+  File? marketLogo;
 
-  String comapnyActivity;
+  String? comapnyActivity;
 
   final SignInGetx signInGetx = Get.put(SignInGetx());
 
@@ -69,8 +69,8 @@ class _EditMarketProfilePageState extends State<EditMarketProfilePage> {
   }
 
   saveLogo() async {
-    PickedFile file = await ImagePicker().getImage(source: ImageSource.gallery);
-    this.marketLogo = File(file.path);
+    XFile? file = await ImagePicker().pickImage(source: ImageSource.gallery);
+    this.marketLogo = file != null ? File(file.path) : null;
   }
 
   savecomapnyActivity(String value) {
@@ -79,34 +79,35 @@ class _EditMarketProfilePageState extends State<EditMarketProfilePage> {
 
   validateEmailFunction(String value) {
     if (value.isEmpty) {
-      return translator.translate('null_error');
+      return 'null_error'.tr;
     } else if (!isEmail(value)) {
-      return translator.translate('email_error');
+      return 'email_error'.tr;
     }
   }
 
   validatepasswordFunction(String value) {
     if (value.isEmpty) {
-      return translator.translate('null_error');
+      return 'null_error'.tr;
     } else if (value.length < 8) {
-      return translator.translate('password_error');
+      return 'password_error'.tr;
     }
   }
 
   nullValidation(String value) {
     if (value.isEmpty) {
-      return translator.translate('null_error');
+      return 'null_error'.tr;
     }
   }
 
   saveForm() {
-    if (editMarketProfile.currentState.validate()) {
-      editMarketProfile.currentState.save();
+    if (editMarketProfile.currentState?.validate() == true) {
+      editMarketProfile.currentState?.save();
       if (ConnectivityService.connectivityStatus !=
           ConnectivityStatus.Offline) {
         widget.appUser.marketLogo = signInGetx.file;
+        if (widget.appUser.userId == null) return;
         RegistrationClient.registrationIntance
-            .updateMarketProfile(widget.appUser.userId, widget.appUser);
+            .updateMarketProfile(widget.appUser.userId!, widget.appUser);
       } else {
         CustomDialougs.utils
             .showDialoug(messageKey: 'network_error', titleKey: 'alert');
@@ -118,13 +119,9 @@ class _EditMarketProfilePageState extends State<EditMarketProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     return Scaffold(
       appBar: AppBar(
-        title: Text(translator.translate('edit_market_profile')),
+        title: Text('edit_market_profile'.tr),
       ),
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
@@ -145,7 +142,7 @@ class _EditMarketProfilePageState extends State<EditMarketProfilePage> {
                           width: 10.w,
                         ),
                         Text(
-                          translator.translate('edit_market_profile'),
+                          'edit_market_profile'.tr,
                           style: Styles.titleTextStyle,
                         ),
                       ],
@@ -154,7 +151,7 @@ class _EditMarketProfilePageState extends State<EditMarketProfilePage> {
                   MyTextField(
                     isEdit: true,
                     initialValue: widget.appUser.companyName,
-                    hintTextKey: 'company_name',
+                    hintTextKey: 'company_name'.tr,
                     nofLines: 1,
                     validateFunction: nullValidation,
                     saveFunction: saveCompanyName,
@@ -162,7 +159,7 @@ class _EditMarketProfilePageState extends State<EditMarketProfilePage> {
                   MyTextField(
                     isEdit: true,
                     initialValue: widget.appUser.userName,
-                    hintTextKey: 'user_name',
+                    hintTextKey: 'user_name'.tr,
                     nofLines: 1,
                     validateFunction: nullValidation,
                     saveFunction: saveuserName,
@@ -170,7 +167,7 @@ class _EditMarketProfilePageState extends State<EditMarketProfilePage> {
                   MyTextField(
                     isEdit: true,
                     initialValue: widget.appUser.password,
-                    hintTextKey: 'password',
+                    hintTextKey: 'password'.tr,
                     nofLines: 1,
                     validateFunction: validatepasswordFunction,
                     saveFunction: savepassword,
@@ -194,8 +191,8 @@ class _EditMarketProfilePageState extends State<EditMarketProfilePage> {
                         color: AppColors.primaryColor,
                       ),
                       title: Obx(() => signInGetx.poitinAsString.value.isEmpty
-                          ? Text(translator.translate(
-                              '${widget.appUser.lat} - ${widget.appUser.lon}'))
+                          ? Text(
+                              '${widget.appUser.lat} - ${widget.appUser.lon}')
                           : Text(signInGetx.poitinAsString.value))),
                   MyTextField(
                     isEdit: true,
@@ -222,7 +219,7 @@ class _EditMarketProfilePageState extends State<EditMarketProfilePage> {
                     children: [
                       Expanded(
                         child: PrimaryButton(
-                          buttonPressFun: saveForm,
+                          onPressed: saveForm,
                           textKey: 'edit',
                         ),
                       ),
@@ -231,7 +228,7 @@ class _EditMarketProfilePageState extends State<EditMarketProfilePage> {
                       ),
                       Expanded(
                         child: PrimaryButton(
-                          buttonPressFun: saveForm,
+                          onPressed: saveForm,
                           textKey: 'undo',
                           color: Color(0xff888888),
                         ),

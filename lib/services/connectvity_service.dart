@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 enum ConnectivityStatus { WiFi, Cellular, Offline }
 
 class ConnectivityService {
-  static ConnectivityStatus connectivityStatus;
-  BuildContext context;
+  static ConnectivityStatus? connectivityStatus;
+  late BuildContext context;
   // Create our public controller
   Stream<ConnectivityStatus> get valueStream =>
       connectionStatusController.stream;

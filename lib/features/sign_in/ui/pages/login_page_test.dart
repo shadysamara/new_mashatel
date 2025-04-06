@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:get/get.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mashatel/features/customers/blocs/app_get.dart';
@@ -16,7 +16,7 @@ import 'package:mashatel/features/sign_in/repositories/registration_client.dart'
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mashatel/features/sign_in/ui/pages/regestration_options.dart';
-import 'package:mashatel/features/sign_in/ui/pages/testpage.dart';
+
 import 'package:mashatel/services/connectvity_service.dart';
 
 import 'package:mashatel/utils/custom_dialoug.dart';
@@ -37,8 +37,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   AppGet appGet = Get.put(AppGet());
 
-  String userName;
-  String password;
+  String? userName;
+  String? password;
   saveUserName(String value) {
     this.userName = value;
   }
@@ -49,18 +49,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
   validatepasswordFunction(String value) {
     if (value.isEmpty) {
-      return translator.translate('null_error');
+      return 'null_error'.tr;
     } else if (value.length < 8) {
-      return translator.translate('password_error');
+      return 'password_error'.tr;
     }
   }
 
   validateEmailFunction(String value) {
     final bool isValid = isEmail(value.trim());
     if (value.isEmpty) {
-      return translator.translate("enter_your_username");
+      return "enter_your_username".tr;
     } else if (!isNumeric(value) && !isValid) {
-      return translator.translate("your_email_invalid");
+      return "your_email_invalid".tr;
     }
     return null;
   }
@@ -70,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Container(
       margin: EdgeInsets.only(top: 25.h, bottom: 25.h),
       child: Text(
-        translator.translate("login"),
+        "login".tr,
         textAlign: TextAlign.center,
         style: TextStyle(
           color: AppColors.primaryText,
@@ -83,10 +83,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   saveUserInSharedPreferences(SpUser spUser) async {
     await SPHelper.spHelper.setUserCredintials(
-        isAdmin: spUser.isAdmin,
-        isCustomer: spUser.isCustomer,
-        isMarket: spUser.isMarket,
-        userId: spUser.userId);
+        isAdmin: spUser.isAdmin ?? false,
+        isCustomer: spUser.isCustomer ?? false,
+        isMarket: spUser.isMarket ?? false,
+        userId: spUser.userId!);
     try {} catch (e) {
       CustomDialougs.utils
           .showDialoug(messageKey: 'internal_server_error', titleKey: 'alert');
@@ -97,10 +97,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     return Scaffold(
       appBar: EmptyAppBar(),
       body: Container(
@@ -139,44 +135,43 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   getChats(String myId) async {
-    List<Map<String, dynamic>> allChats =
+    List<Map<String, dynamic>>? allChats =
         await MashatelClient.mashatelClient.getAllChats(myId);
-    appGet.allChats.value = allChats;
+    appGet.allChats.value = allChats ?? [];
   }
 
   Future<void> checkUsername() async {
     final mFormData = loginFormKey.currentState;
-    if (!mFormData.validate()) {
+    if (!(mFormData?.validate() ?? false)) {
       return;
     }
 
-    mFormData.save();
+    mFormData?.save();
 
     try {
-      String username = this.userName.trim().toLowerCase();
-      String password = this.password.trim();
+      String username = this.userName?.trim().toLowerCase() ?? '';
+      String password = this.password?.trim() ?? '';
       if (ConnectivityService.connectivityStatus !=
           ConnectivityStatus.Offline) {
-        AppUser user = await RegistrationClient.registrationIntance
+        AppUser? user = await RegistrationClient.registrationIntance
             .loginToApp(username, password);
 
-        if (!user.isNull) {
+        if (!(user == null)) {
+          if (user.userId == null) return;
           signInGetx.pr.hide();
-          getChats(user.userId);
-          if (user.isMarket) {
-            signInGetx.setUserType(userType.market);
-            appGet.setMarketId(user.userId);
+          getChats(user.userId!);
+          if (user.isMarket == true) {
+            signInGetx.setUserType(UserType.market);
+            appGet.setMarketId(user.userId!);
             appGet.setAppUser(user);
             appGet.getMarketProducts(user.userId);
-            Get.off(MarketPage(user));
-
-            Get.off(MarketPage(user));
-          } else if (user.isCustomer) {
-            signInGetx.setUserType(userType.customer);
+            Get.off(MarketPage(appUser: user));
+          } else if (user.isCustomer == true) {
+            signInGetx.setUserType(UserType.customer);
             appGet.setAppUser(user);
             Get.off(MainPage());
           } else {
-            signInGetx.setUserType(userType.admin);
+            signInGetx.setUserType(UserType.admin);
             appGet.setAppUser(user);
             Get.off(MainPage());
           }
@@ -193,7 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _userNameField() {
     return MyTextField(
-      hintTextKey: 'user_name',
+      hintTextKey: 'user_name'.tr,
       nofLines: 1,
       saveFunction: saveUserName,
       validateFunction: validateEmailFunction,
@@ -202,7 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _passwordField() {
     return MyTextField(
-      hintTextKey: 'password',
+      hintTextKey: 'password'.tr,
       nofLines: 1,
       saveFunction: savePassword,
       validateFunction: validatepasswordFunction,
@@ -214,8 +209,8 @@ class _LoginScreenState extends State<LoginScreen> {
       padding: EdgeInsets.only(left: 20.w, top: 15.h, right: 20.w),
       child: PrimaryButton(
         color: AppColors.primaryColor,
-        textKey: 'login',
-        buttonPressFun: checkUsername,
+        textKey: 'login'.tr,
+        onPressed: checkUsername,
       ),
     );
   }
@@ -230,8 +225,8 @@ class _LoginScreenState extends State<LoginScreen> {
       padding: EdgeInsets.only(left: 20.w, top: 15.h, right: 20.w),
       child: PrimaryButton(
         color: Colors.black.withOpacity(0.65),
-        textKey: 'register',
-        buttonPressFun: registerButtonFunction,
+        textKey: 'register'.tr,
+        onPressed: registerButtonFunction,
       ),
     );
   }

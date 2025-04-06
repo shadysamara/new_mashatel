@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
+
 import 'package:mashatel/features/customers/ui/pages/main_page.dart';
 import 'package:mashatel/features/sign_in/ui/pages/login_page_test.dart';
 import 'package:mashatel/features/sign_in/ui/pages/regestration_options.dart';
@@ -61,11 +61,10 @@ class _WelcomePageState extends State<WelcomePage> {
                 Column(
                   children: [
                     Text(
-                      translator.translate('app_title'),
+                      'app_title'.tr,
                       style: TextStyle(
                           fontWeight: FontWeight.w700,
-                          fontSize: ScreenUtil()
-                              .setSp(20, allowFontScalingSelf: true)),
+                          fontSize: ScreenUtil().setSp(20.sp)),
                     ),
                     SizedBox(height: 20.h),
                   ],
@@ -101,9 +100,9 @@ class _WelcomePageState extends State<WelcomePage> {
                 Container(
                     padding: EdgeInsets.symmetric(horizontal: 30.w),
                     child: PrimaryButton(
-                      textKey: 'start_shopping',
+                      textKey: 'start_shopping'.tr,
                       color: Colors.black.withOpacity(0.5),
-                      buttonPressFun: () {
+                      onPressed: () {
                         Get.off(MainPage());
                       },
                     )),
@@ -116,13 +115,13 @@ class _WelcomePageState extends State<WelcomePage> {
                           onTap: () {
                             Get.off(RegistrationOptionsPage());
                           },
-                          child: Text(translator.translate('register'))),
-                      Text(translator.translate('or')),
+                          child: Text('register'.tr)),
+                      Text('or'.tr),
                       GestureDetector(
                           onTap: () {
                             Get.off(LoginScreen());
                           },
-                          child: Text(translator.translate('login')))
+                          child: Text('login'.tr))
                     ],
                   ),
                 )

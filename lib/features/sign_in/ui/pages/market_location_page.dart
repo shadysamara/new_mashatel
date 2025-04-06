@@ -16,7 +16,7 @@ class MarkertLocationCollecter extends StatefulWidget {
 
 class LocationCollecterState extends State<MarkertLocationCollecter> {
   final SignInGetx signInGetx = Get.put(SignInGetx());
-  GoogleMapController mapController;
+  late GoogleMapController mapController;
   GlobalKey<ScaffoldState> scaffolState = GlobalKey();
   String label = '';
   final LatLng _center = const LatLng(24.4539, 54.3773);
@@ -41,13 +41,9 @@ class LocationCollecterState extends State<MarkertLocationCollecter> {
   }
 
   Set<Marker> _markers = {};
-  Position markerPosition;
+  late Position markerPosition;
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     return Scaffold(
       key: scaffolState,
       appBar: AppBar(
@@ -67,7 +63,15 @@ class LocationCollecterState extends State<MarkertLocationCollecter> {
               setState(() {});
               markerPosition = Position(
                   latitude: piclerLocation.latitude,
-                  longitude: piclerLocation.longitude);
+                  longitude: piclerLocation.longitude,
+                  timestamp: DateTime.now(),
+                  accuracy: 0.0,
+                  altitude: 0.0,
+                  altitudeAccuracy: 0.0,
+                  heading: 0.0,
+                  headingAccuracy: 0.0,
+                  speed: 0.0,
+                  speedAccuracy: 0.0);
               signInGetx.setPositionValue(markerPosition);
               signInGetx.positionIsMarkes.value = true;
             },
@@ -80,7 +84,7 @@ class LocationCollecterState extends State<MarkertLocationCollecter> {
           Positioned(
             top: 0,
             left: 0,
-            child: FlatButton(
+            child: TextButton(
                 onPressed: () async {
                   Position position = await signInGetx.setCurrentLocation();
                   signInGetx.positionIsMarkes.value = true;

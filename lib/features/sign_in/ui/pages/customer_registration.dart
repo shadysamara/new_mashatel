@@ -1,18 +1,14 @@
-import 'dart:io';
-
-import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
+
 import 'package:mashatel/features/sign_in/models/customer_model.dart';
 import 'package:mashatel/features/sign_in/models/userApp.dart';
 import 'package:mashatel/features/sign_in/providers/signInGetx.dart';
 import 'package:mashatel/features/sign_in/repositories/registration_client.dart';
-import 'package:mashatel/features/sign_in/ui/pages/testpage.dart';
 import 'package:mashatel/features/sign_in/ui/widgets/upload_file.dart';
 import 'package:mashatel/services/connectvity_service.dart';
 import 'package:mashatel/utils/custom_dialoug.dart';
@@ -32,13 +28,13 @@ class CustomerRegistrationPage extends StatefulWidget {
 class _customerRegistrationPageState extends State<CustomerRegistrationPage> {
   GlobalKey<FormState> customerRegFormKey = GlobalKey();
 
-  String userName;
+  String? userName;
 
-  String password;
+  String? password;
 
-  String phoneNumber;
+  String? phoneNumber;
 
-  String email;
+  String? email;
   final SignInGetx signInGetx = Get.put(SignInGetx());
   saveEmail(String value) {
     this.email = value;
@@ -58,29 +54,29 @@ class _customerRegistrationPageState extends State<CustomerRegistrationPage> {
 
   validatepasswordFunction(String value) {
     if (value.isEmpty) {
-      return translator.translate('null_error');
+      return 'null_error'.tr;
     } else if (value.length < 8) {
-      return translator.translate('password_error');
+      return 'password_error'.tr;
     }
   }
 
   validateEmailFunction(String value) {
     if (value.isEmpty) {
-      return translator.translate('null_error');
+      return 'null_error'.tr;
     } else if (!isEmail(value)) {
-      return translator.translate('email_error');
+      return 'email_error'.tr;
     }
   }
 
   nullValidation(String value) {
     if (value.isEmpty) {
-      return translator.translate('null_error');
+      return 'null_error'.tr;
     }
   }
 
   saveForm() async {
-    if (customerRegFormKey.currentState.validate()) {
-      customerRegFormKey.currentState.save();
+    if (customerRegFormKey.currentState?.validate() == true) {
+      customerRegFormKey.currentState?.save();
       AppUser customer = AppUser(
           userName: this.userName,
           phoneNumber: this.phoneNumber,
@@ -89,16 +85,16 @@ class _customerRegistrationPageState extends State<CustomerRegistrationPage> {
       if (ConnectivityService.connectivityStatus !=
           ConnectivityStatus.Offline) {
         signInGetx.pr.show();
-        String id = await RegistrationClient.registrationIntance
+        String? id = await RegistrationClient.registrationIntance
             .registerAsCustomer(customer);
         if (!id.isNull) {
           signInGetx.pr.hide();
           Get.snackbar(
-            translator.translate('market_snackbar_title'),
-            translator.translate('customer_snackbar_message'),
+            'market_snackbar_title'.tr,
+            'customer_snackbar_message'.tr,
             duration: Duration(seconds: 3),
           );
-          signInGetx.setUserType(userType.customer);
+          signInGetx.setUserType(UserType.customer);
           print('go to customer page');
         }
       } else {
@@ -112,13 +108,9 @@ class _customerRegistrationPageState extends State<CustomerRegistrationPage> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     return Scaffold(
       appBar: AppBar(
-        title: Text(translator.translate('customers_register')),
+        title: Text('customers_register'.tr),
       ),
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
@@ -139,18 +131,18 @@ class _customerRegistrationPageState extends State<CustomerRegistrationPage> {
                           width: 10.w,
                         ),
                         Text(
-                          translator.translate('customers_register'),
+                          'customers_register'.tr,
                           style: Styles.titleTextStyle,
                         ),
                       ],
                     ),
                     subtitle: Text(
-                      translator.translate('customers_register_note'),
+                      'customers_register_note'.tr,
                       style: Styles.subTitleTextStyle,
                     ),
                   ),
                   MyTextField(
-                    hintTextKey: 'user_name',
+                    hintTextKey: 'user_name'.tr,
                     nofLines: 1,
                     validateFunction: nullValidation,
                     saveFunction: saveuserName,
@@ -162,7 +154,7 @@ class _customerRegistrationPageState extends State<CustomerRegistrationPage> {
                     saveFunction: saveEmail,
                   ),
                   MyTextField(
-                    hintTextKey: 'password',
+                    hintTextKey: 'password'.tr,
                     nofLines: 1,
                     validateFunction: validatepasswordFunction,
                     saveFunction: savepassword,
@@ -179,8 +171,8 @@ class _customerRegistrationPageState extends State<CustomerRegistrationPage> {
                     height: 40.h,
                   ),
                   PrimaryButton(
-                    buttonPressFun: saveForm,
-                    textKey: 'register',
+                    onPressed: saveForm,
+                    textKey: 'register'.tr,
                   )
                 ],
               ),

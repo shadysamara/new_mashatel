@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
+
 import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/customers/ui/pages/add_product.dart';
 import 'package:mashatel/features/sign_in/providers/signInGetx.dart';
@@ -28,10 +28,14 @@ class BaseAppbar extends StatelessWidget implements PreferredSizeWidget {
           Expanded(
               child: Container(
                   child: Text(
-            translator.translate(title),
+            title.tr,
             textAlign: TextAlign.center,
+            style: TextStyle(
+                fontFamily: "DIN",
+                fontWeight: FontWeight.bold,
+                color: Colors.white),
           ))),
-          signInGetx.usertype.value != userType.market
+          signInGetx.usertype.value != UserType.market
               ? Container()
               : IconButton(
                   icon: Icon(

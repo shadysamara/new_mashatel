@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mashatel/features/sign_in/ui/pages/customer_registration.dart';
 import 'package:mashatel/features/sign_in/ui/pages/market_registration.dart';
@@ -22,7 +21,10 @@ class RegistrationOptionsPage extends StatelessWidget {
     return Container(
         child: Scaffold(
       appBar: AppBar(
-        title: Text(translator.translate('Regestration')),
+        title: Text(
+          'registration'.tr,
+          style: TextStyle(fontFamily: "DIN", fontWeight: FontWeight.bold),
+        ),
       ),
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 30.h),
@@ -31,10 +33,10 @@ class RegistrationOptionsPage extends StatelessWidget {
           children: [
             ListTile(
               title: Text(
-                translator.translate('new_user'),
+                'new_user'.tr,
                 style: Styles.titleTextStyle,
               ),
-              subtitle: Text(translator.translate('new_user_note')),
+              subtitle: Text('new_user_note'.tr),
             ),
             Expanded(
                 child: CircleButton(

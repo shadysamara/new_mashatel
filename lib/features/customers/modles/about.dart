@@ -1,6 +1,6 @@
 class AboutAppModel {
-  String nameAr;
-  String nameEn;
+  String? nameAr;
+  String? nameEn;
   AboutAppModel({this.nameAr, this.nameEn});
   AboutAppModel.fromMap(Map map) {
     this.nameAr = map['nameAr'];

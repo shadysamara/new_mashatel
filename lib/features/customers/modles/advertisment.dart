@@ -1,8 +1,8 @@
 class Advertisment {
-  String imageUrl;
-  String url;
-  String id;
-  bool isActive;
+  String? imageUrl;
+  String? url;
+  String? id;
+  bool? isActive;
   Advertisment({this.imageUrl, this.url});
   Advertisment.fromMap(Map map) {
     this.imageUrl = map['imageUrl'];

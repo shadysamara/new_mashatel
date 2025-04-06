@@ -11,8 +11,8 @@ class AdvertismentWidget extends StatelessWidget {
   double margin;
   AdvertismentWidget(this.advertisment, this.margin);
   launchURL() async {
-    if (await canLaunch(advertisment.url)) {
-      await launch(advertisment.url);
+    if (await canLaunch(advertisment.url ?? '')) {
+      await launch(advertisment.url ?? '');
     } else {
       CustomDialougs.utils
           .showDialoug(messageKey: 'launch_error', titleKey: 'alert');
@@ -21,10 +21,6 @@ class AdvertismentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     return GestureDetector(
       onTap: () {
         launchURL();
@@ -45,7 +41,7 @@ class AdvertismentWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(2),
               clipBehavior: Clip.antiAlias,
               child: CachedNetworkImage(
-                imageUrl: advertisment.imageUrl,
+                imageUrl: advertisment.imageUrl ?? '',
                 fit: BoxFit.cover,
               )),
         ),

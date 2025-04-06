@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/values/styles.dart';
@@ -10,14 +10,10 @@ class TermsPage extends StatelessWidget {
   AppGet appGet = Get.put(AppGet());
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     return Scaffold(
       endDrawer: AppSettings(appGet.appUser.value),
       appBar: AppBar(
-        title: Text(translator.translate('conditions')),
+        title: Text('conditions'.tr),
       ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -33,7 +29,7 @@ class TermsPage extends StatelessWidget {
               ),
             ),
             Text(
-              translator.translate('conditions'),
+              'conditions'.tr,
               style: Styles.headerStyle,
             ),
             SizedBox(
@@ -42,14 +38,15 @@ class TermsPage extends StatelessWidget {
             Expanded(
               child: appGet.termsModel.isNull
                   ? Center(
-                      child: Text(translator.translate('no_data')),
+                      child: Text('no_data'.tr),
                     )
                   : SingleChildScrollView(
                       child: Column(
                         children: [
-                          Text(translator.currentLanguage == 'ar'
-                              ? appGet.termsModel.nameAr
-                              : appGet.termsModel.nameEn),
+                          Text((Get.locale == Locale('ar')
+                                  ? appGet.termsModel?.nameAr
+                                  : appGet.termsModel?.nameEn) ??
+                              ''),
                         ],
                       ),
                     ),

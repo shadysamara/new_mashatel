@@ -1,16 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
 
-class Category {
-  String nameAr;
-  String nameEn;
-  String imagePath;
-  String catId;
+class Category extends Equatable {
+  String? nameAr;
+  String? nameEn;
+  String? imagePath;
+  String? catId;
   Category({this.catId, this.imagePath, this.nameAr, this.nameEn});
-  Category.fromMap(DocumentSnapshot map) {
-    this.nameAr = map.data()['nameAr'];
-    this.nameEn = map.data()['nameEn'];
-    this.imagePath = map.data()['imagePath'];
-    this.catId = map.id;
+  Category.fromMap(Map<String, dynamic> map) {
+    this.nameAr = map['nameAr'];
+    this.nameEn = map['nameEn'];
+    this.imagePath = map['imagePath'];
+    this.catId = map['id'];
   }
   Map<String, dynamic> toJson() {
     return {
@@ -20,6 +21,7 @@ class Category {
     };
   }
 
-  bool operator ==(dynamic other) =>
-      other != null && other is Category && this.catId == other.catId;
+  @override
+  // TODO: implement props
+  List<Object?> get props => [catId];
 }

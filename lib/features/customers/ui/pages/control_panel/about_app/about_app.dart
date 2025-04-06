@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/values/styles.dart';
@@ -10,14 +10,10 @@ class AboutApp extends StatelessWidget {
   AppGet appGet = Get.put(AppGet());
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     return Scaffold(
       endDrawer: AppSettings(appGet.appUser.value),
       appBar: AppBar(
-        title: Text(translator.translate('About_app')),
+        title: Text('About_app'.tr),
       ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -33,7 +29,7 @@ class AboutApp extends StatelessWidget {
               ),
             ),
             Text(
-              translator.translate('About_app'),
+              'About_app'.tr,
               style: Styles.headerStyle,
             ),
             SizedBox(
@@ -41,15 +37,14 @@ class AboutApp extends StatelessWidget {
             ),
             Expanded(
               child: appGet.aboutAppModel.isNull
-                  ? Center(
-                      child: Text(translator.translate('no_data')),
-                    )
+                  ? Center(child: Text('no_data'.tr))
                   : SingleChildScrollView(
                       child: Column(
                         children: [
-                          Text(translator.currentLanguage == 'ar'
-                              ? appGet.aboutAppModel.nameAr
-                              : appGet.aboutAppModel.nameEn),
+                          Text((Get.locale == Locale('ar')
+                                  ? appGet.aboutAppModel?.nameAr
+                                  : appGet.aboutAppModel?.nameEn) ??
+                              ''),
                         ],
                       ),
                     ),

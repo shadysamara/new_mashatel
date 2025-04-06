@@ -12,15 +12,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mashatel/widgets/custom_drawer.dart';
 
 class MarketPage extends StatelessWidget {
-  AppUser appUser;
-  MarketPage(this.appUser);
+  AppUser? appUser;
+  MarketPage({this.appUser});
   AppGet appGet = Get.put(AppGet());
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     return WillPopScope(
       onWillPop: () {
         appGet.products.value = [];
@@ -28,7 +24,7 @@ class MarketPage extends StatelessWidget {
       },
       child: Scaffold(
         endDrawer: AppSettings(appGet.appUser.value),
-        appBar: BaseAppbar(appUser != null ? appUser.userName : ''),
+        appBar: BaseAppbar(appUser != null ? appUser?.userName ?? '' : ''),
         // drawer: AppSettings(appGet.appUser.value),
         body: Column(
           children: [
@@ -46,8 +42,10 @@ class MarketPage extends StatelessWidget {
                     itemBuilder: (context, index) {
                       return GestureDetector(
                           onTap: () {
-                            Get.to(ProductDetails(
-                                appGet.products[index], appUser));
+                            if (appUser != null) {
+                              Get.to(ProductDetails(
+                                  appGet.products[index], appUser!));
+                            }
                           },
                           child: Container(
                             child: ProductWidget(appGet.products[index]),

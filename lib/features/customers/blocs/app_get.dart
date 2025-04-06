@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:get/get.dart';
 import 'package:mashatel/features/customers/modles/about.dart';
@@ -8,7 +9,7 @@ import 'package:mashatel/features/customers/modles/terms.dart';
 import 'package:mashatel/features/customers/repositories/mashatel_client.dart';
 import 'package:mashatel/features/sign_in/models/userApp.dart';
 import 'package:mashatel/utils/custom_dialoug.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:multi_image_picker_plus/multi_image_picker_plus.dart';
 
 class AppGet {
   bool isFromDynamic = false;
@@ -23,8 +24,8 @@ class AppGet {
   var products = <ProductModel>[].obs;
   var bannedProducts = <ProductModel>[].obs;
   var advertisments = <Advertisment>[].obs;
-  AboutAppModel aboutAppModel;
-  TermsModel termsModel;
+  AboutAppModel? aboutAppModel;
+  TermsModel? termsModel;
   var allChats = <Map<String, dynamic>>[].obs;
   updateCategory(Category category) async {
     await MashatelClient.mashatelClient.updateCategory(category);
@@ -102,39 +103,38 @@ class AppGet {
 
   getAllCategories() async {
     print('hi');
-    List<Category> categories =
+    List<Category>? categories =
         await MashatelClient.mashatelClient.getAllCategories();
-    this.allCategories.value = categories;
-    print(categories.length);
+    this.allCategories.value = categories ?? [];
   }
 
   getAllMarkets(String catId) async {
-    List<AppUser> markets =
-        await MashatelClient.mashatelClient.getAllMarkets(catId);
-    print(markets);
-    this.markets.value = markets;
+    List<AppUser>? markets =
+        await MashatelClient.mashatelClient.getAllMarkets();
+    log("markets: ${markets?.length.toString()}");
+    this.markets.value = markets ?? [];
   }
 
   getMarketProducts(String? marketId) async {
-    List<ProductModel> products =
+    List<ProductModel>? products =
         await MashatelClient.mashatelClient.getAllProducts(marketId);
 
-    this.products.value = products;
+    this.products.value = products ?? [];
   }
 
-  Future<String> addNewCategory(Category category) async {
+  Future<String?> addNewCategory(Category category) async {
     category.imagePath = this.imagePath.value;
-    String catId =
+    String? catId =
         await MashatelClient.mashatelClient.insertNewCategory(category);
-    this.catId.value = catId;
+    this.catId.value = catId ?? '';
     this.imagePath.value = '';
     getAllCategories();
     return catId;
   }
 
-  Future<String> uploadImage(File file) async {
-    String imageUrl = await MashatelClient.mashatelClient.uploadImage(file);
-    this.imagePath.value = imageUrl;
+  Future<String?> uploadImage(File file) async {
+    String? imageUrl = await MashatelClient.mashatelClient.uploadImage(file);
+    this.imagePath.value = imageUrl ?? '';
     return imageUrl;
   }
 

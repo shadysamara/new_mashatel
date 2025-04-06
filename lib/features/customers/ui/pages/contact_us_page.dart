@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
+
 import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/customers/modles/complaint_model.dart';
 import 'package:mashatel/features/customers/repositories/mashatel_client.dart';
@@ -22,13 +22,13 @@ class ContactUsPage extends StatefulWidget {
 class _ContactUsPageState extends State<ContactUsPage> {
   GlobalKey<FormState> complainKey = GlobalKey();
   AppGet appGet = Get.put(AppGet());
-  String title;
+  String? title;
 
-  String content;
+  String? content;
 
-  String email;
+  String? email;
 
-  String phoneNumber;
+  String? phoneNumber;
 
   saveTitle(String title) {
     this.title = title;
@@ -48,21 +48,21 @@ class _ContactUsPageState extends State<ContactUsPage> {
 
   nullValidation(String value) {
     if (value.isEmpty) {
-      return translator.translate('null_error');
+      return 'null_error'.tr;
     }
   }
 
   validateEmailFunction(String value) {
     if (value.isEmpty) {
-      return translator.translate('null_error');
+      return 'null_error'.tr;
     } else if (!isEmail(value)) {
-      return translator.translate('email_error');
+      return 'email_error'.tr;
     }
   }
 
   saveForm() async {
-    if (complainKey.currentState.validate()) {
-      complainKey.currentState.save();
+    if (complainKey.currentState?.validate() == true) {
+      complainKey.currentState?.save();
       if (ConnectivityService.connectivityStatus !=
           ConnectivityStatus.Offline) {
         ComplaintModel complaintModel = ComplaintModel(
@@ -70,7 +70,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
             complaintTitle: this.title,
             email: this.email,
             mobileNumber: this.phoneNumber);
-        String complaintId =
+        String? complaintId =
             await MashatelClient.mashatelClient.addComplaint(complaintModel);
         if (complaintId != null) {
           CustomDialougs.utils
@@ -90,10 +90,6 @@ class _ContactUsPageState extends State<ContactUsPage> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     return Scaffold(
       appBar: BaseAppbar('contact_us'),
       endDrawer: AppSettings(appGet.appUser.value),
@@ -130,7 +126,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                 PrimaryButton(
                     color: AppColors.primaryColor,
                     textKey: 'add',
-                    buttonPressFun: saveForm)
+                    onPressed: saveForm)
               ],
             ),
           ),

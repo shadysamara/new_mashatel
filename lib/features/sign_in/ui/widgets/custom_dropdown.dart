@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
+
 import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/customers/modles/category.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,7 +9,7 @@ import 'package:mashatel/values/colors.dart';
 import 'package:provider/provider.dart';
 
 class CategoriesDropDown extends StatefulWidget {
-  Function dropDownBtnFunction;
+  Function? dropDownBtnFunction;
 
   CategoriesDropDown({this.dropDownBtnFunction});
 
@@ -35,7 +35,7 @@ class _CategoriesDropDownState extends State<CategoriesDropDown> {
             borderRadius: BorderRadius.all(new Radius.circular(50.0.h))),
       ),
       child: DropdownButton<Category>(
-        hint: Text(translator.translate("dropDownCategory")),
+        hint: Text("dropDownCategory".tr),
         isExpanded: true,
         icon: Icon(Icons.keyboard_arrow_down),
         underline: Container(),
@@ -43,7 +43,7 @@ class _CategoriesDropDownState extends State<CategoriesDropDown> {
         items: appGet.allCategories.map((e) {
           return DropdownMenuItem<Category>(
             child:
-                Text(translator.currentLanguage == 'en' ? e.nameEn : e.nameAr),
+                Text((Get.locale == Locale("en") ? e.nameEn : e.nameAr) ?? ''),
             value: e,
           );
         }).toList(),

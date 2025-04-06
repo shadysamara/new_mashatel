@@ -24,11 +24,10 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_screenutil:
-  localize_and_translate:
   string_validator:
   flutter_svg:
   cached_network_image:
-  carousel_slider:
+  carousel_slider: ^5.0.0
   google_fonts:
   settings_ui:
   image_picker:
@@ -37,7 +36,6 @@ dependencies:
   time:
   equatable:
   flutter_slidable:
-  flare_flutter:
   auto_size_text:
   connectivity:
   get:
@@ -50,7 +48,7 @@ dependencies:
   provider: 
   after_layout:
   url_launcher:
-  multi_image_picker: 
+  multi_image_picker_plus: 
   file_picker: 
   dio: 
   http:
@@ -68,6 +66,11 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons:
+  share_plus: ^10.1.4
+  flutter_localization: ^0.3.2
+  firebase_dynamic_links: ^6.1.5
+  smooth_page_indicator: ^1.2.1
+  progress_dialog_null_safe: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -87,13 +90,12 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
-    - assets/langs/
     - assets/animations/
   #   - images/a_dot_ham.jpeg
-fonts:
-  - family: DIN NEXT ARABIC BOLD
-    fonts:
-      - asset: assets/fonts/DINNEXTARABICBOLD.otf
-  - family: DIN NEXT ARABIC REGULAR
-    fonts:
-      - asset: assets/fonts/DINNEXTARABICREGULAR.otf
+  fonts:
+    - family: DIN
+      fonts:
+        - asset: assets/fonts/DINNextLTArabic-Regular-4.ttf
+        - weight: 800
+          asset: assets/fonts/DINNextLTArabic-Bold-4.ttf
+

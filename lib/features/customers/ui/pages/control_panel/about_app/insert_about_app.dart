@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/customers/modles/about.dart';
@@ -24,9 +24,9 @@ class _NewCategoryState extends State<NewAboutApp> {
   AppGet appGet = Get.put(AppGet());
   GlobalKey<FormState> aboutFormKey = GlobalKey();
 
-  String nameEn;
+  String? nameEn;
 
-  String nameAr;
+  String? nameAr;
 
   setCatNameAr(String value) {
     this.nameAr = value;
@@ -38,13 +38,13 @@ class _NewCategoryState extends State<NewAboutApp> {
 
   nullValidation(String value) {
     if (value.isEmpty) {
-      return translator.translate('null_error');
+      return 'null_error'.tr;
     }
   }
 
   saveForm() async {
-    if (aboutFormKey.currentState.validate()) {
-      aboutFormKey.currentState.save();
+    if (aboutFormKey.currentState?.validate() == true) {
+      aboutFormKey.currentState?.save();
       if (ConnectivityService.connectivityStatus !=
           ConnectivityStatus.Offline) {
         signInGetx.pr.show();
@@ -73,10 +73,6 @@ class _NewCategoryState extends State<NewAboutApp> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     return Scaffold(
       endDrawer: AppSettings(appGet.appUser.value),
       appBar: BaseAppbar('About_app'),
@@ -106,7 +102,7 @@ class _NewCategoryState extends State<NewAboutApp> {
               PrimaryButton(
                   color: AppColors.primaryColor,
                   textKey: 'add',
-                  buttonPressFun: saveForm)
+                  onPressed: saveForm)
             ],
           ),
         ),

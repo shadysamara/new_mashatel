@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/customers/modles/category.dart';
@@ -17,10 +17,10 @@ import 'package:mashatel/widgets/custom_drawer.dart';
 import 'package:mashatel/widgets/primary_button.dart';
 
 class EditCategory extends StatefulWidget {
-  String imageUrl;
-  String nameAr;
-  String nameEn;
-  String catId;
+  String? imageUrl;
+  String? nameAr;
+  String? nameEn;
+  String? catId;
   EditCategory({this.imageUrl, this.nameAr, this.nameEn, this.catId});
   @override
   _NewCategoryState createState() => _NewCategoryState();
@@ -33,11 +33,11 @@ class _NewCategoryState extends State<EditCategory> {
 
   bool isUploaded = false;
 
-  File imageFile;
+  File? imageFile;
 
-  String nameEn;
+  String? nameEn;
 
-  String nameAr;
+  String? nameAr;
 
   setCatNameAr(String value) {
     this.nameAr = value;
@@ -49,19 +49,19 @@ class _NewCategoryState extends State<EditCategory> {
 
   nullValidation(String value) {
     if (value.isEmpty) {
-      return translator.translate('null_error');
+      return 'null_error'.tr;
     }
   }
 
   initState() {
     super.initState();
-    appGet.imagePath.value = widget.imageUrl;
+    appGet.imagePath.value = widget.imageUrl ?? '';
   }
 
   saveForm() async {
-    if (formKey.currentState.validate()) {
+    if (formKey.currentState?.validate() == true) {
       if (appGet.imagePath.value.isNotEmpty) {
-        formKey.currentState.save();
+        formKey.currentState?.save();
         if (ConnectivityService.connectivityStatus !=
             ConnectivityStatus.Offline) {
           Category category = Category(
@@ -84,10 +84,6 @@ class _NewCategoryState extends State<EditCategory> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     return Scaffold(
       appBar: BaseAppbar('edit_cat'),
       endDrawer: AppSettings(appGet.appUser.value),
@@ -98,10 +94,13 @@ class _NewCategoryState extends State<EditCategory> {
             children: [
               GestureDetector(onTap: () async {
                 appGet.imagePath.value = '';
-                PickedFile pickImage =
-                    await ImagePicker().getImage(source: ImageSource.gallery);
+                XFile? pickImage =
+                    await ImagePicker().pickImage(source: ImageSource.gallery);
+                if (pickImage == null) {
+                  return;
+                }
                 this.imageFile = File(pickImage.path);
-                appGet.setLocalImageFile(imageFile);
+                appGet.setLocalImageFile(imageFile!);
               }, child: Obx(() {
                 return appGet.localImageFilePath.value.isNotEmpty
                     ? appGet.imagePath.value.isNotEmpty
@@ -126,7 +125,7 @@ class _NewCategoryState extends State<EditCategory> {
                         decoration: BoxDecoration(
                             image: DecorationImage(
                                 image: CachedNetworkImageProvider(
-                                    widget.imageUrl))),
+                                    widget.imageUrl ?? ''))),
                         width: 200.w,
                         height: 200.h,
                         child: Icon(
@@ -144,7 +143,11 @@ class _NewCategoryState extends State<EditCategory> {
                 child: PrimaryButton(
                   color: AppColors.primaryColor,
                   textKey: 'upload_image',
-                  buttonPressFun: () => appGet.uploadImage(imageFile),
+                  onPressed: () {
+                    if (imageFile != null) {
+                      appGet.uploadImage(imageFile!);
+                    }
+                  },
                 ),
               ),
               SizedBox(
@@ -175,7 +178,7 @@ class _NewCategoryState extends State<EditCategory> {
               PrimaryButton(
                   color: AppColors.primaryColor,
                   textKey: 'edit',
-                  buttonPressFun: saveForm)
+                  onPressed: saveForm)
             ],
           ),
         ),

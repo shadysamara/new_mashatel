@@ -1,15 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mashatel/values/colors.dart';
 
 class MyTextField extends StatelessWidget {
-  final String hintTextKey;
+  final String? hintTextKey;
   final isEdit;
   final initialValue;
-  final Function saveFunction;
-  final Function validateFunction;
+  final Function? saveFunction;
+  final Function? validateFunction;
   final int nofLines;
   final TextInputType textInputType;
   MyTextField(
@@ -23,12 +23,9 @@ class MyTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     return Container(
       child: TextFormField(
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         initialValue: isEdit ? initialValue : '',
         maxLines: nofLines,
         onFieldSubmitted: (value) {
@@ -39,9 +36,14 @@ class MyTextField extends StatelessWidget {
         decoration: InputDecoration(
           helperText: ' ',
           alignLabelWithHint: true,
-          labelText: translator.translate(hintTextKey),
+          labelText: hintTextKey,
+          hintStyle: TextStyle(
+            fontFamily: "DIN",
+            fontSize: ScreenUtil().setSp(15.sp),
+          ),
           labelStyle: TextStyle(
-            fontSize: ScreenUtil().setSp(15, allowFontScalingSelf: true),
+            fontFamily: "DIN",
+            fontSize: ScreenUtil().setSp(15.sp),
           ),
           border: OutlineInputBorder(
             borderSide: BorderSide(color: AppColors.primaryColor, width: 2.0.w),
@@ -49,13 +51,15 @@ class MyTextField extends StatelessWidget {
           ),
         ),
         validator: (value) {
-          return validateFunction(value.trim());
+          return validateFunction == null
+              ? null
+              : validateFunction!(value?.trim());
         },
-        onSaved: (newValue) => saveFunction(newValue.trim()),
-        onChanged: (value) => validateFunction(value.trim()),
+        onSaved: (newValue) =>
+            saveFunction == null ? null : saveFunction!(newValue?.trim()),
         style: TextStyle(
           fontWeight: FontWeight.w500,
-          fontSize: ScreenUtil().setSp(18, allowFontScalingSelf: true),
+          fontSize: ScreenUtil().setSp(18.sp),
         ),
       ),
     );

@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
 
 class CustomDialougs {
   CustomDialougs._();
   static CustomDialougs utils = CustomDialougs._();
-  showDialoug({String titleKey, String messageKey, Function function}) {
+  showDialoug(
+      {required String titleKey,
+      required String messageKey,
+      Function? function}) {
     Get.defaultDialog(
         confirm: CupertinoButton(
             child: Text('Ok'),
@@ -13,14 +15,14 @@ class CustomDialougs {
               print('ok');
               function == null ? Get.back() : function();
             }),
-        middleText: translator.translate(messageKey),
-        title: translator.translate(titleKey));
+        middleText: messageKey.tr,
+        title: titleKey.tr);
   }
 
-  showSackbar({String titleKey, String messageKey}) {
+  showSackbar({required String titleKey, required String messageKey}) {
     Get.snackbar(
-      translator.translate(titleKey),
-      translator.translate(messageKey),
+      titleKey.tr,
+      messageKey.tr,
       duration: Duration(seconds: 3),
     );
   }

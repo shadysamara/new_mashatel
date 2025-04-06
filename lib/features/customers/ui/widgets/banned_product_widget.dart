@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:get/get.dart';
+
 import 'package:mashatel/features/customers/modles/product_model.dart';
 import 'package:mashatel/features/sign_in/models/userApp.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,13 +9,9 @@ import 'package:mashatel/values/radii.dart';
 
 class BannedProduct extends StatelessWidget {
   ProductModel productModel;
-  BannedProduct({this.productModel});
+  BannedProduct({required this.productModel});
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: 392.72727272727275,
-        height: 850.9090909090909,
-        allowFontScaling: true);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
       margin: EdgeInsets.symmetric(vertical: 5.h, horizontal: 10.w),
@@ -42,7 +39,7 @@ class BannedProduct extends StatelessWidget {
                 borderRadius: Radii.widgetsRadius,
                 clipBehavior: Clip.antiAlias,
                 child: CachedNetworkImage(
-                  imageUrl: productModel.imagesUrls.first,
+                  imageUrl: productModel.imagesUrls?.first ?? '',
                   fit: BoxFit.cover,
                 )),
           ),
@@ -53,19 +50,21 @@ class BannedProduct extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                translator.currentLanguage == 'ar'
-                    ? productModel.nameAr
-                    : productModel.nameEn,
+                (Get.locale == Locale("ar")
+                        ? productModel.nameAr
+                        : productModel.nameEn) ??
+                    '',
                 textAlign: TextAlign.start,
               ),
               Text(
-                translator.currentLanguage == 'ar'
-                    ? productModel.descAr
-                    : productModel.descEn,
+                (Get.locale == Locale("ar")
+                        ? productModel.descAr
+                        : productModel.descEn) ??
+                    '',
               ),
-              Text(translator.translate('reported_by') +
+              Text('reported_by' +
                   ' ${productModel.bannedUsers.toString()} ' +
-                  translator.translate('users'))
+                  'users'.tr)
             ],
           ),
           Spacer(),
