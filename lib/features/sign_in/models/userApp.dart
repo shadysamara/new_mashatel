@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:mashatel/features/customers/modles/product_model.dart';
+
 class AppUser {
   String? userName;
   String? phoneNumber;

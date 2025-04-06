@@ -5,46 +5,41 @@ import 'package:mashatel/values/radii.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 
-class ProgressDialogUtils extends ProgressDialog {
+class ProgressDialogUtils {
   static ProgressDialog? pr;
 
-  ProgressDialogUtils(BuildContext context) : super(context);
-
-  static ProgressDialog createProgressDialog(BuildContext context) {
-    pr = new ProgressDialog(
-      context,
-      customBody: Container(
-        decoration: BoxDecoration(borderRadius: Radii.k8pxRadius),
-        height: 200.h,
-        width: 200.w,
-        child: CircularProgressIndicator(),
+  ProgressDialogUtils(BuildContext context);
+  bool dialougIsShown = false;
+  void show() {
+    dialougIsShown = true;
+    Get.dialog<void>(
+      WillPopScope(
+        onWillPop: () async => false,
+        child: Center(
+          child: Container(
+            padding: EdgeInsets.all(15),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15.sp),
+                color: Colors.white),
+            height: 50.sp,
+            width: 50.sp,
+            child: CircularProgressIndicator(
+              color: Colors.blue,
+              strokeWidth: 3,
+            ),
+          ),
+        ),
       ),
-      type: ProgressDialogType.normal,
-      isDismissible: true,
+      barrierDismissible: false,
     );
-    pr?.style(
-      message: "processing_order".tr,
-      borderRadius: 10.0,
-      backgroundColor: Colors.white,
-      progressTextStyle: TextStyle(
-          color: AppColors.primaryColor,
-          fontSize: 13.0,
-          fontWeight: FontWeight.w400),
-      messageTextStyle: TextStyle(
-          color: Colors.black, fontSize: 16.0, fontWeight: FontWeight.normal),
-    );
-    return pr!;
   }
 
-  void showProgressDialog() {
-    if (pr != null) {
-      pr!.show();
-    }
-  }
-
-  void hideProgressDialog() {
-    if (pr != null) {
-      pr!.hide();
+  bool _isCompleted = false;
+  bool get isLoading => !_isCompleted;
+  void hide() {
+    if (dialougIsShown) {
+      dialougIsShown = false;
+      Get.back<void>();
     }
   }
 }

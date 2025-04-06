@@ -1,4 +1,5 @@
 Map<String, String> arSA = {
+  "all": "عرض كل المنتجات",
   "registration": "التسجيل",
   "home": "الرئيسية",
   "start_shopping": "ابدأ التسوق",

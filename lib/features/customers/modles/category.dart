@@ -15,6 +15,7 @@ class Category extends Equatable {
   }
   Map<String, dynamic> toJson() {
     return {
+      "id": this.catId,
       'nameAr': this.nameAr,
       'nameEn': this.nameEn,
       'imagePath': this.imagePath

@@ -102,42 +102,37 @@ class _MarketRegistrationPageState extends State<MarketRegistrationPage> {
     if (marketRegFormKey.currentState?.validate() == true) {
       if (signInGetx.file != null) {
         if (signInGetx.positionIsMarkes.value == true) {
-          if (signInGetx.category != null) {
-            marketRegFormKey.currentState?.save();
-            AppUser market = AppUser(
-                comapnyActivity: this.comapnyActivity,
-                companyName: this.companyName,
-                email: this.email,
-                marketLogo: signInGetx.file,
-                password: this.password,
-                phoneNumber: this.phoneNumber,
-                lat: signInGetx.position.value.latitude,
-                lon: signInGetx.position.value.longitude,
-                userName: this.userName);
-            if (ConnectivityService.connectivityStatus !=
-                ConnectivityStatus.Offline) {
-              signInGetx.pr.show();
-              AppUser? appUser = await RegistrationClient.registrationIntance
-                  .registerAsMarket(market);
-              if (appUser != null) {
-                signInGetx.pr.hide();
-                CustomDialougs.utils.showSackbar(
-                    messageKey: 'market_snackbar_message',
-                    titleKey: 'market_snackbar_title');
-                signInGetx.setUserType(UserType.market);
-                appGet.setMarketId(appUser.userId!);
-                appGet.setAppUser(appUser);
-                await Future.delayed(Duration(seconds: 3));
+          marketRegFormKey.currentState?.save();
+          AppUser market = AppUser(
+              comapnyActivity: this.comapnyActivity,
+              companyName: this.companyName,
+              email: this.email,
+              marketLogo: signInGetx.file,
+              password: this.password,
+              phoneNumber: this.phoneNumber,
+              lat: signInGetx.position.value.latitude,
+              lon: signInGetx.position.value.longitude,
+              userName: this.userName);
+          if (ConnectivityService.connectivityStatus !=
+              ConnectivityStatus.Offline) {
+            signInGetx.pr.show();
+            AppUser? appUser = await RegistrationClient.registrationIntance
+                .registerAsMarket(market);
+            if (appUser != null) {
+              signInGetx.pr.hide();
+              CustomDialougs.utils.showSackbar(
+                  messageKey: 'market_snackbar_message',
+                  titleKey: 'market_snackbar_title');
+              signInGetx.setUserType(UserType.market);
+              appGet.setMarketId(appUser.userId!);
+              appGet.setAppUser(appUser);
+              await Future.delayed(Duration(seconds: 3));
 
-                Get.offAll(MarketPage(appUser: appUser));
-              }
-            } else {
-              CustomDialougs.utils
-                  .showDialoug(messageKey: 'network_error', titleKey: 'alert');
+              Get.offAll(MarketPage(appUser: appUser));
             }
           } else {
-            CustomDialougs.utils.showDialoug(
-                messageKey: 'missing_category', titleKey: 'missing_element');
+            CustomDialougs.utils
+                .showDialoug(messageKey: 'network_error', titleKey: 'alert');
           }
         } else {
           CustomDialougs.utils.showDialoug(

@@ -20,7 +20,7 @@ class SignInGetx {
   File? file;
   String? companyName;
   String? imagePath;
-  var pr = ProgressDialogUtils.createProgressDialog(Get.context!);
+  var pr = ProgressDialogUtils(Get.context!);
   ////////////////////////////////////////////////////////////////
 
   setUserType(UserType usertype) {

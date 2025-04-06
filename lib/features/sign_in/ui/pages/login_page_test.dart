@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:get/get.dart';
@@ -158,18 +160,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
         if (!(user == null)) {
           if (user.userId == null) return;
-          signInGetx.pr.hide();
           getChats(user.userId!);
           if (user.isMarket == true) {
             signInGetx.setUserType(UserType.market);
             appGet.setMarketId(user.userId!);
             appGet.setAppUser(user);
             appGet.getMarketProducts(user.userId);
+            log("hello from shady");
             Get.off(MarketPage(appUser: user));
           } else if (user.isCustomer == true) {
             signInGetx.setUserType(UserType.customer);
             appGet.setAppUser(user);
-            Get.off(MainPage());
+            Get.to(MainPage());
           } else {
             signInGetx.setUserType(UserType.admin);
             appGet.setAppUser(user);

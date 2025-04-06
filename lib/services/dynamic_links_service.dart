@@ -44,9 +44,10 @@ class DynamicLinkService {
 
       if (deepLink.queryParameters.containsKey('id')) {
         String? id = deepLink.queryParameters['id'];
-        if (id == null) return;
+        String? marketId = deepLink.queryParameters['marketId'];
+        if (id == null || marketId == null) return;
         ProductModel? productModel =
-            await MashatelClient.mashatelClient.getProductById(id);
+            await MashatelClient.mashatelClient.getProductById(id, marketId);
 
         if (productModel != null) {
           appGet.isFromDynamic = true;
@@ -60,10 +61,11 @@ class DynamicLinkService {
           .listen((PendingDynamicLinkData? dynamicLink) async {
         if (dynamicLink != null) {
           if (dynamicLink.link.queryParameters.containsKey('id')) {
-            String id = dynamicLink.link.queryParameters['id']!;
-
-            ProductModel? productModel =
-                await MashatelClient.mashatelClient.getProductById(id);
+            String? id = dynamicLink.link.queryParameters['id']!;
+            String? marketId = deepLink.queryParameters['marketId'];
+            if (marketId == null) return;
+            ProductModel? productModel = await MashatelClient.mashatelClient
+                .getProductById(id, marketId);
 
             if (productModel != null) {
               AppUser appUser = await MashatelClient.mashatelClient

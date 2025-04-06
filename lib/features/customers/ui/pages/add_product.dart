@@ -8,6 +8,7 @@ import 'package:mashatel/features/customers/blocs/app_get.dart';
 import 'package:mashatel/features/customers/modles/product_model.dart';
 import 'package:mashatel/features/customers/repositories/mashatel_client.dart';
 import 'package:mashatel/features/sign_in/providers/signInGetx.dart';
+import 'package:mashatel/features/sign_in/ui/widgets/custom_dropdown.dart';
 import 'package:mashatel/features/sign_in/ui/widgets/upload_multi_images.dart';
 import 'package:mashatel/services/connectvity_service.dart';
 import 'package:mashatel/utils/custom_dialoug.dart';
@@ -104,6 +105,7 @@ class _MarketRegistrationPageState extends State<AddNewProduct> {
             nameAr: this.nameAr,
             nameEn: this.nameEn,
             price: this.price,
+            category: signInGetx.category,
             marketId: appGet.appUser.value.userId);
 
         if (ConnectivityService.connectivityStatus !=
@@ -183,6 +185,7 @@ class _MarketRegistrationPageState extends State<AddNewProduct> {
                     textInputType: TextInputType.number,
                   ),
                   uploadMultibleFile(),
+                  CategoriesDropDown(),
                   Text('ad_settings'.tr),
                   CheckboxListTile(
                       title: Text('isInnerMessages'.tr),

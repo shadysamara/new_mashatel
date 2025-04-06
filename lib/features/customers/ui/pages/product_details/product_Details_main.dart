@@ -176,8 +176,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                     : appGet.appUser.value.isAdmin == true
                         ? MashatelClient.mashatelClient.removeProduct(
                             widget.product.productId ?? '',
-                            widget.product.marketId ?? '',
-                            widget.appUser)
+                            widget.product.marketId ?? '')
                         : MashatelClient.mashatelClient.reportPorductByCustomer(
                             widget.product.productId ?? '',
                             widget.appUser.userId ?? '');

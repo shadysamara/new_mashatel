@@ -22,11 +22,13 @@ class AppGet {
   var marketId = ''.obs;
   var images = <Asset>[].obs;
   var products = <ProductModel>[].obs;
+  var cateroizedProducts = <ProductModel>[].obs;
   var bannedProducts = <ProductModel>[].obs;
   var advertisments = <Advertisment>[].obs;
   AboutAppModel? aboutAppModel;
   TermsModel? termsModel;
   var allChats = <Map<String, dynamic>>[].obs;
+
   updateCategory(Category category) async {
     await MashatelClient.mashatelClient.updateCategory(category);
     imagePath.value = '';
@@ -108,7 +110,7 @@ class AppGet {
     this.allCategories.value = categories ?? [];
   }
 
-  getAllMarkets(String catId) async {
+  getAllMarkets() async {
     List<AppUser>? markets =
         await MashatelClient.mashatelClient.getAllMarkets();
     log("markets: ${markets?.length.toString()}");
@@ -120,6 +122,24 @@ class AppGet {
         await MashatelClient.mashatelClient.getAllProducts(marketId);
 
     this.products.value = products ?? [];
+    getMarketCategories();
+  }
+
+  getProductsByCategory(String catId) async {
+    List<ProductModel>? selectedProducts =
+        products.where((element) => element.category?.catId == catId).toList();
+    cateroizedProducts.value = selectedProducts;
+  }
+
+  getMarketCategories() {
+    List<Category> uniqueCategories = products
+        .map((e) => e.category)
+        .whereType<Category>() // remove nulls
+        .toSet()
+        .toList();
+    allCategories.value = uniqueCategories;
+    catId.value = "all";
+    cateroizedProducts.value = products;
   }
 
   Future<String?> addNewCategory(Category category) async {

@@ -1,4 +1,5 @@
 Map<String, String> enUS = {
+  "all": "All Products",
   "registration": "Registration",
   "home": "Home",
   "start_shopping": "Start Shopping",

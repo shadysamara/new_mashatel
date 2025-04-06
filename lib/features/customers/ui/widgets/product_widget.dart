@@ -54,9 +54,9 @@ class ProductWidget extends StatelessWidget {
                           ? GestureDetector(
                               onTap: () {
                                 MashatelClient.mashatelClient.removeProduct(
-                                    product.productId!,
-                                    product.marketId!,
-                                    appGet.appUser.value);
+                                  product.productId!,
+                                  product.marketId!,
+                                );
                               },
                               child: Container(
                                 padding: EdgeInsets.all(10),

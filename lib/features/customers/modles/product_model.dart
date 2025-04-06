@@ -1,3 +1,4 @@
+import 'package:mashatel/features/customers/modles/category.dart';
 import 'package:multi_image_picker_plus/multi_image_picker_plus.dart';
 
 class ProductModel {
@@ -14,6 +15,7 @@ class ProductModel {
   String? marketId;
   int? bannedUsers;
   bool? isBanned;
+  Category? category;
   ProductModel(
       {this.descAr,
       this.descEn,
@@ -26,7 +28,8 @@ class ProductModel {
       this.price,
       this.productId,
       this.isBanned,
-      this.marketId});
+      this.marketId,
+      required this.category});
   ProductModel.fromMap(Map map) {
     this.nameAr = map['nameAr'];
     this.nameEn = map['nameEn'];
@@ -39,6 +42,8 @@ class ProductModel {
     this.productId = map['productId'];
     this.marketId = map['marketId'];
     this.isBanned = map['isBanned'];
+    this.category =
+        map['category'] != null ? Category.fromMap(map['category']) : null;
   }
   toJson() {
     return {
@@ -51,7 +56,8 @@ class ProductModel {
       'isWithoutPhoneNumber': this.isWithoutPhoneNumber,
       'price': this.price,
       'marketId': this.marketId,
-      'isBanned': false
+      'isBanned': false,
+      "category": this.category != null ? this.category?.toJson() : null,
     };
   }
 }

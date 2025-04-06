@@ -108,7 +108,7 @@ class _SplashScreenState extends State<SplashScreen>
           } else if (spUser?.isMarket == true) {
             signInGetx.usertype.value = UserType.market;
             appGet.marketId.value = spUser!.userId!;
-            Get.off(() => MarketPage(appUser: appUser!));
+            Get.off(() => MarketPage(appUser: appUser));
           } else if (spUser?.isAdmin == true) {
             signInGetx.usertype.value = UserType.admin;
             Get.off(() => MainPage());
@@ -138,6 +138,6 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Future<void> afterFirstLayout(BuildContext context) async {
-    await appGet.getAllCategories();
+    await appGet.getAllMarkets();
   }
 }

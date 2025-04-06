@@ -5,8 +5,10 @@ import 'package:get/get.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mashatel/features/customers/blocs/app_get.dart';
+import 'package:mashatel/features/customers/ui/pages/market_page.dart';
 import 'package:mashatel/features/customers/ui/pages/markets_page.dart';
 import 'package:mashatel/features/customers/ui/widgets/main_category_widget.dart';
+import 'package:mashatel/features/customers/ui/widgets/market_item_widget.dart';
 import 'package:mashatel/features/sign_in/providers/signInGetx.dart';
 import 'package:mashatel/widgets/custom_appbar.dart';
 import 'package:mashatel/widgets/custom_drawer.dart';
@@ -24,7 +26,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: BaseAppbar('categories'),
+      appBar: BaseAppbar('markets'),
       endDrawer: AppSettings(appGet.appUser.value),
       body: Container(
         child: Column(
@@ -34,30 +36,34 @@ class _MainPageState extends State<MainPage> {
               isAds: true,
               ads: appGet.advertisments,
             )),
+            SizedBox(
+              height: 10.h,
+            ),
             Expanded(
               child: Container(
                 child: Obx(() {
-                  return appGet.allCategories.isNotEmpty
+                  return appGet.markets.isNotEmpty
                       ? ListView.builder(
-                          itemCount: appGet.allCategories.length,
+                          itemCount: appGet.markets.length,
                           itemBuilder: (context, index) {
                             return Container(
                               margin: EdgeInsets.symmetric(horizontal: 10.w),
                               child: Obx(() {
                                 return GestureDetector(
                                   onTap: () {
-                                    log(appGet.allCategories[index]
-                                        .toJson()
+                                    log(appGet.markets[index]
+                                        .toMarketJson()
                                         .toString());
-                                    if (appGet.allCategories[index].catId !=
-                                        null) {
-                                      appGet.getAllMarkets(
-                                          appGet.allCategories[index].catId!);
-                                      Get.to(MarketsPage());
+                                    if (appGet.markets[index].userId != null) {
+                                      appGet.getMarketProducts(
+                                          appGet.markets[index].userId!);
+                                      Get.to(MarketPage(
+                                        appUser: appGet.markets[index],
+                                      ));
                                     }
                                   },
-                                  child: CategoryWidget(
-                                    category: appGet.allCategories[index],
+                                  child: MarketWidget(
+                                    appUser: appGet.markets[index],
                                   ),
                                 );
                               }),

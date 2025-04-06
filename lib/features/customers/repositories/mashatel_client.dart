@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -118,9 +119,11 @@ class MashatelClient {
           .get();
       final List<QueryDocumentSnapshot> queryDocumentSnapshot =
           querySnapshot.docs;
-      final List<AppUser> markets = queryDocumentSnapshot
-          .map((e) => AppUser.fromMarketJson(e.data() as Map<String, dynamic>))
-          .toList();
+      final List<AppUser> markets = queryDocumentSnapshot.map((e) {
+        Map<String, dynamic> data = e.data() as Map<String, dynamic>;
+        data['userId'] = e.id;
+        return AppUser.fromMarketJson(data);
+      }).toList();
       signInGetx.pr.hide();
       return markets;
     } catch (e) {
@@ -145,12 +148,16 @@ class MashatelClient {
   }
 
   //////////////////////////////////////////////////////////////////
-  Future<void> removeProduct(
-      String productId, String marketId, AppUser appUser) async {
+  Future<void> removeProduct(String productId, String marketId) async {
     try {
       logger.e(productId);
       signInGetx.pr.show();
-      await firestore.collection('products').doc(productId).delete();
+      await firestore
+          .collection('users')
+          .doc(marketId)
+          .collection("products")
+          .doc(productId)
+          .delete();
       await firestore.collection('repoerts').doc(productId).delete();
       await getAllProducts(marketId);
       await getReportedProducts();
@@ -324,8 +331,11 @@ class MashatelClient {
           await uploadAllImages(assetImages, appUser.userName ?? '');
       productModel.imagesUrls = urls;
 
-      final DocumentReference documentReference =
-          await firestore.collection('products').add(productModel.toJson());
+      final DocumentReference documentReference = await firestore
+          .collection('users')
+          .doc(appUser.userId)
+          .collection("products")
+          .add(productModel.toJson());
       await appGet.getMarketProducts(appUser.userId);
       return documentReference
           .id; // Return actual ID instead of hardcoded string
@@ -345,10 +355,14 @@ class MashatelClient {
   }
 
   //////////////////////////////////////////////////////////////////
-  Future<ProductModel?> getProductById(String productId,
+  Future<ProductModel?> getProductById(String productId, String marketId,
       [int? bannedUsers]) async {
-    final DocumentSnapshot documentSnapshot =
-        await firestore.collection('products').doc(productId).get();
+    final DocumentSnapshot documentSnapshot = await firestore
+        .collection('users')
+        .doc(marketId)
+        .collection("products")
+        .doc(productId)
+        .get();
     if (documentSnapshot.exists) {
       final Map<String, dynamic> map =
           documentSnapshot.data() as Map<String, dynamic>;
@@ -409,11 +423,13 @@ class MashatelClient {
   Future<List<ProductModel>?> getAllProducts(String? marketId) async {
     try {
       final QuerySnapshot querySnapshot = await firestore
+          .collection("users")
+          .doc(marketId)
           .collection(productsCollectionName)
-          .where('marketId', isEqualTo: marketId)
           .get();
       final List<QueryDocumentSnapshot> queryDocumentSnapshot =
           querySnapshot.docs;
+      log("market products count: ${queryDocumentSnapshot.length}");
       final List<ProductModel> products = queryDocumentSnapshot.map((e) {
         final Map<String, dynamic> map = e.data() as Map<String, dynamic>;
         map['productId'] = e.id;

@@ -23,9 +23,6 @@ class _uploadFileState extends State<uploadFile> {
     if (file == null) {
       return;
     }
-    if (marketLogo == null) {
-      return;
-    }
     this.marketLogo = File(file.path);
     String fileName = marketLogo!.path.substring(
         marketLogo!.path.lastIndexOf('/') + 1, marketLogo!.path.length);
