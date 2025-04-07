@@ -37,7 +37,6 @@ dependencies:
   equatable:
   flutter_slidable:
   auto_size_text:
-  connectivity:
   get:
   firebase_core:
   firebase_auth:

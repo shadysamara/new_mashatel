@@ -6,6 +6,7 @@ import 'package:mashatel/features/sign_in/ui/pages/customer_registration.dart';
 import 'package:mashatel/features/sign_in/ui/pages/market_registration.dart';
 import 'package:mashatel/features/sign_in/ui/widgets/circle_button.dart';
 import 'package:mashatel/values/styles.dart';
+import 'package:mashatel/welcome_page.dart';
 
 class RegistrationOptionsPage extends StatelessWidget {
   marketsButtonFun() {
@@ -21,6 +22,13 @@ class RegistrationOptionsPage extends StatelessWidget {
     return Container(
         child: Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Get.off(WelcomePage());
+          },
+        ),
         title: Text(
           'registration'.tr,
           style: TextStyle(fontFamily: "DIN", fontWeight: FontWeight.bold),
